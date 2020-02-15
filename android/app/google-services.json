@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "753122255665",
+    "firebase_url": "https://cogent-mobile-app.firebaseio.com",
+    "project_id": "cogent-mobile-app",
+    "storage_bucket": "cogent-mobile-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:753122255665:android:13cfc0edb1216880fc8610",
+        "android_client_info": {
+          "package_name": "com.darahas.cws_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "753122255665-qqkjaqakphjpb18ih926en7ig63t5s31.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCq-O0fvpYynkfsRZPv1TFw-9rWu6WzfV0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "753122255665-qqkjaqakphjpb18ih926en7ig63t5s31.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
