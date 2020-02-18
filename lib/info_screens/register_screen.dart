@@ -23,7 +23,7 @@ class _RegisterPageState extends State<RegisterPage> {
     'Development Employee',
     'Design Employee',
     'Development Admin',
-    'Design Admin',
+    'Design Admin'
   ];
 
   DropdownButton<String> androidDropdown(currenciesList) {
@@ -101,7 +101,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         var x = await _auth.createUserWithEmailAndPassword(email: email, password: password);
                         if(x!=null){
                           var user = await _auth.currentUser();
-                          await firestore.collection('users').document(user.uid).setData({
+                          await firestore.collection(selectedCurrency).document(user.uid).setData({
                             'name': name,
                             'mobile': mobile,
                             'city' : city,
@@ -109,7 +109,6 @@ class _RegisterPageState extends State<RegisterPage> {
                           setState(() {
                             loading = false;
                           });
-                          Navigator.pop(context);
                         }
                       }catch(e){
                         print(e);

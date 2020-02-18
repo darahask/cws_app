@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 
-class EmployeeDashboard extends StatelessWidget {
+class EmployeeDashboard extends StatefulWidget {
+  @override
+  _EmployeeDashboardState createState() => _EmployeeDashboardState();
+}
+
+class _EmployeeDashboardState extends State<EmployeeDashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
