@@ -1,44 +1,39 @@
-import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cws_app/dm_classes/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 
 final fireStore = Firestore.instance;
 FirebaseUser loggedInUser;
+String uid;
 
-class Chat extends StatefulWidget {
+class AdminClient extends StatefulWidget {
+
+  final String uid;
+  final FirebaseUser loggedInUser;
+  AdminClient({this.uid,this.loggedInUser});
+
   @override
-  _ChatScreenState createState() => _ChatScreenState();
+  _AdminClientState createState() => _AdminClientState();
 }
 
-class _ChatScreenState extends State<Chat> {
+class _AdminClientState extends State<AdminClient> {
 
   final messageTextController = TextEditingController();
-  final _auth = FirebaseAuth.instance;
   String messageText;
 
   @override
   void initState() {
     super.initState();
-    getCurrentUser();
-  }
-
-  void getCurrentUser() async{
-    try {
-      var user = await _auth.currentUser();
-      if (user != null) {
-        loggedInUser = user;
-      }
-    }catch(e){
-      print(e);
-    }
+    loggedInUser = widget.loggedInUser;
+    uid = widget.uid;
   }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(title: Text('Chat with Admins'),),
+        appBar: AppBar(title: Text('Chat with Clients'),),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -61,7 +56,7 @@ class _ChatScreenState extends State<Chat> {
                   FlatButton(
                     onPressed: () {
                       messageTextController.clear();
-                      fireStore.collection('Client').document(loggedInUser.uid).collection('messages').add({
+                      fireStore.collection('Client').document(uid).collection('messages').add({
                         'text': messageText,
                         'sender': loggedInUser == null? 'Anonymous':loggedInUser.email,
                         'timestamp': DateTime.now().millisecondsSinceEpoch.toString(),
@@ -82,12 +77,11 @@ class _ChatScreenState extends State<Chat> {
   }
 }
 
-
 class MessagesStream extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: fireStore.collection('Client').document(loggedInUser.uid).collection('messages').orderBy('timestamp',descending: false).snapshots(),
+      stream: fireStore.collection('Client').document(uid).collection('messages').orderBy('timestamp',descending: false).snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return Padding(

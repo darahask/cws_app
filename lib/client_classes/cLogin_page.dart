@@ -90,7 +90,6 @@ class _ClientLoginState extends State<ClientLogin> {
                         if(x!=null){
                           var user = await _auth.currentUser();
                           var data = await firestore.collection('Client').getDocuments();
-                          print(user.uid);
                           for( var doc in data.documents){
                             print(doc.documentID);
                             if(doc.documentID == user.uid){
