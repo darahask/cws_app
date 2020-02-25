@@ -93,7 +93,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   new InputWidget(name: 'Confirm Password',data: Icons.lock,onpressed: (val){ password = val;},),
                   SizedBox(height: 60,),
                   GestureDetector(
-                    onTap: ()async{
+                    onTap: () async{
                       try{
                         setState(() {
                           loading = true;
@@ -110,7 +110,8 @@ class _RegisterPageState extends State<RegisterPage> {
                             loading = false;
                           });
                         }
-                      }catch(e){
+                      }
+                      catch(e){
                         print(e);
                       }
                     },

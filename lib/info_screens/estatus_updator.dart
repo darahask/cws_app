@@ -1,99 +1,105 @@
-import 'package:flutter/material.dart';
-import 'package:cws_app/dm_classes/constants.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cws_app/dm_classes/constants.dart';
+import 'package:cws_app/info_screens/emp_details.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 
 final fireStore = Firestore.instance;
 FirebaseUser loggedInUser;
-String TYPE;
+String uid,TYPE;
 
-class EmployeeChat extends StatefulWidget {
-
-   EmployeeChat(this.type);
-   final String type;
+class StatusUpdater extends StatefulWidget {
+  final String uid,type;
+  final FirebaseUser loggedInUser;
+  StatusUpdater({this.uid, this.loggedInUser,this.type});
 
   @override
-  _EmployeeChatState createState() => _EmployeeChatState();
+  _StatusUpdaterState createState() => _StatusUpdaterState();
 }
 
-class _EmployeeChatState extends State<EmployeeChat> {
+class _StatusUpdaterState extends State<StatusUpdater> {
 
   final messageTextController = TextEditingController();
-  final _auth = FirebaseAuth.instance;
   String messageText;
 
   @override
   void initState() {
-    super.initState();
-    getCurrentUser();
+    loggedInUser = widget.loggedInUser;
+    uid = widget.uid;
     TYPE = widget.type;
-  }
-
-  void getCurrentUser() async{
-    try {
-      var user = await _auth.currentUser();
-      if (user != null) {
-        loggedInUser = user;
-      }
-    }catch(e){
-      print(e);
-    }
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(title: Text('Chat with Admins'),),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            (loggedInUser != null)?MessagesStream():Container(),
-            Container(
-              decoration: kMessageContainerDecoration,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Expanded(
-                    child: TextField(
-                      controller: messageTextController,
-                      onChanged: (value) {
-                        messageText = value;
-                      },
-                      decoration: kMessageTextFieldDecoration,
-                    ),
-                  ),
-                  FlatButton(
-                    onPressed: () {
-                      messageTextController.clear();
-                      fireStore.collection(widget.type).document(loggedInUser.uid).collection('messages').add({
-                        'text': messageText,
-                        'sender': loggedInUser == null? 'Anonymous':loggedInUser.email,
-                        'timestamp': DateTime.now().millisecondsSinceEpoch.toString(),
-                      });
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Employee'),
+        actions: <Widget>[
+          PopupMenuButton<String>(
+            onSelected: (choice){
+              Navigator.push(context, MaterialPageRoute(builder: (context)=>AdminEmployeeDash(uid:uid,type:TYPE)));
+            },
+            itemBuilder: (context) {
+              return Choices.clist.map(
+                (choice) {
+                  return PopupMenuItem<String>(
+                    value: choice,
+                    child: Text(choice),
+                  );
+                },
+              ).toList();
+            },
+          ),
+        ],
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          MessagesStream(),
+          Container(
+            decoration: kMessageContainerDecoration,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Expanded(
+                  child: TextField(
+                    controller: messageTextController,
+                    onChanged: (value) {
+                      messageText = value;
                     },
-                    child: Text(
-                      'Send',
-                      style: kSendButtonTextStyle,
-                    ),
+                    decoration: kMessageTextFieldDecoration,
                   ),
-                ],
-              ),
+                ),
+                FlatButton(
+                  onPressed: () {
+                    messageTextController.clear();
+                    fireStore.collection(TYPE).document(uid).collection('messages').add({
+                      'text': messageText,
+                      'sender': loggedInUser == null? 'Anonymous':loggedInUser.email,
+                      'timestamp': DateTime.now().millisecondsSinceEpoch.toString(),
+                    });
+                  },
+                  child: Text(
+                    'Send',
+                    style: kSendButtonTextStyle,
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 }
 
-
 class MessagesStream extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: fireStore.collection(TYPE).document(loggedInUser.uid).collection('messages').orderBy('timestamp',descending: false).snapshots(),
+      stream: fireStore.collection(TYPE).document(uid).collection('messages').orderBy('timestamp',descending: false).snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return Padding(

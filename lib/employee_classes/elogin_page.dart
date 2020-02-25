@@ -99,7 +99,7 @@ class _ELoginPageState extends State<ELoginPage> {
                               setState(() {
                                 loading = false;
                               });
-                              Navigator.pushReplacement(context, MaterialPageRoute(builder:(context)=>EmployeeInfoPage('sales')));
+                              Navigator.pushReplacement(context, MaterialPageRoute(builder:(context)=>EmployeeInfoPage('Sales Employee')));
                             }
                           }
                           for( var doc in data2.documents){
@@ -107,7 +107,7 @@ class _ELoginPageState extends State<ELoginPage> {
                               setState(() {
                                 loading = false;
                               });
-                              Navigator.pushReplacement(context, MaterialPageRoute(builder:(context)=>EmployeeInfoPage('design')));
+                              Navigator.pushReplacement(context, MaterialPageRoute(builder:(context)=>EmployeeInfoPage('Design Employee')));
                             }
                           }
                           for( var doc in data3.documents){
@@ -115,7 +115,7 @@ class _ELoginPageState extends State<ELoginPage> {
                               setState(() {
                                 loading = false;
                               });
-                              Navigator.pushReplacement(context, MaterialPageRoute(builder:(context)=>EmployeeInfoPage('development')));
+                              Navigator.pushReplacement(context, MaterialPageRoute(builder:(context)=>EmployeeInfoPage('Development Employee')));
                             }
                           }
                           setState(() {

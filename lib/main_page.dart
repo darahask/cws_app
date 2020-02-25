@@ -53,7 +53,7 @@ class MainPage extends StatelessWidget {
               child: Center(
                 child: GestureDetector(
                   onTap: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>ClientLogin()));
+                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>ClientLogin()));
                   },
                   child: Container(
                     width: MediaQuery.of(context).size.width / 1.5,
@@ -81,7 +81,7 @@ class MainPage extends StatelessWidget {
               child: Center(
                 child: GestureDetector(
                   onTap: () {
-                    Navigator.push(
+                    Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(builder: (context) => LoginPage()),
                     );
@@ -112,7 +112,7 @@ class MainPage extends StatelessWidget {
               child: Center(
                 child: GestureDetector(
                   onTap: (){
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context)=>ELoginPage()));
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=>ELoginPage()));
                   },
                   child: Container(
                     width: MediaQuery.of(context).size.width / 1.5,
@@ -140,7 +140,7 @@ class MainPage extends StatelessWidget {
               child: Center(
                 child: GestureDetector(
                   onTap: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>DmLogin()));
+                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>DmLogin()));
                   },
                   child: Container(
                     width: MediaQuery.of(context).size.width / 1.5,

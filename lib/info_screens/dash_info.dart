@@ -1,5 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cws_app/info_screens/status_info.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+final fireStore = Firestore.instance;
+FirebaseUser loggedInUser;
 
 class DashInfo extends StatefulWidget {
   @override
@@ -7,6 +12,27 @@ class DashInfo extends StatefulWidget {
 }
 
 class _DashInfoState extends State<DashInfo> {
+
+  final _auth = FirebaseAuth.instance;
+  String messageText;
+
+  @override
+  void initState() {
+    super.initState();
+    getCurrentUser();
+  }
+
+  void getCurrentUser() async{
+    try {
+      var user = await _auth.currentUser();
+      if (user != null) {
+        loggedInUser = user;
+      }
+    }catch(e){
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -21,16 +47,18 @@ class _DashInfoState extends State<DashInfo> {
                   ),
                   Center(
                     child: Text(
-                      'Dashbord',
+                      'DASHBOARD',
                       style: TextStyle(
                           color: Color(0xff034198),
                           fontSize: 32,
                           fontWeight: FontWeight.bold,
-                          letterSpacing: 1.5),
+                          letterSpacing: 1.5,
+                        shadows: kElevationToShadow[4],
+                      ),
                     ),
                   ),
                   SizedBox(
-                    height: 10,
+                    height: 20,
                   ),
                   Padding(
                     padding: const EdgeInsets.all(16.0),
@@ -102,7 +130,7 @@ class _DashInfoState extends State<DashInfo> {
                     child: Container(
                       height: 90,
                       decoration: BoxDecoration(
-                          boxShadow: kElevationToShadow[8],
+                          boxShadow: kElevationToShadow[2],
                           color: Colors.white),
                       child: Row(
                         children: <Widget>[
@@ -146,7 +174,7 @@ class _DashInfoState extends State<DashInfo> {
                     child: Container(
                       height: 90,
                       decoration: BoxDecoration(
-                          boxShadow: kElevationToShadow[8],
+                          boxShadow: kElevationToShadow[2],
                           color: Colors.white),
                       child: Row(
                         children: <Widget>[
@@ -187,178 +215,7 @@ class _DashInfoState extends State<DashInfo> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 6,),
-                  Center(
-                    child: Text(
-                      'Sales Department',
-                      style: TextStyle(
-                          color: Color(0xff034198),
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 1.5),
-                    ),
-                  ),
                   SizedBox(height: 16,),
-                  Container(
-                    height: 90,
-                    decoration: BoxDecoration(
-                        color: Colors.white),
-                    child: Row(
-                      children: <Widget>[
-                        Icon(
-                          Icons.person,
-                          color: Colors.black,
-                          size: 65,
-                        ),
-                        Expanded(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Row(
-                                children: <Widget>[
-                                  Text(
-                                    'Name(Incomplete)',
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width:30,
-                                  ),
-                                  Text('Active 2 hrs ago'),
-                                ],
-                              ),
-                              Text(
-                                ' when will you complete?',
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  Container(
-                    height: 90,
-                    decoration: BoxDecoration(
-                        color: Colors.white),
-                    child: Row(
-                      children: <Widget>[
-                        Icon(
-                          Icons.person,
-                          color: Colors.black,
-                          size: 65,
-                        ),
-                        Expanded(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Row(
-                                children: <Widget>[
-                                  Text(
-                                    'Name(Incomplete)',
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width:30,
-                                  ),
-                                  Text('Active 2 hrs ago'),
-                                ],
-                              ),
-                              Text(
-                                ' when will you complete?',
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  Container(
-                    height: 90,
-                    decoration: BoxDecoration(
-                        color: Colors.white),
-                    child: Row(
-                      children: <Widget>[
-                        Icon(
-                          Icons.person,
-                          color: Colors.black,
-                          size: 65,
-                        ),
-                        Expanded(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Row(
-                                children: <Widget>[
-                                  Text(
-                                    'Name(Incomplete)',
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width:30,
-                                  ),
-                                  Text('Active 2 hrs ago'),
-                                ],
-                              ),
-                              Text(
-                                ' when will you complete?',
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  Container(
-                    height: 90,
-                    decoration: BoxDecoration(
-                        color: Colors.white),
-                    child: Row(
-                      children: <Widget>[
-                        Icon(
-                          Icons.person,
-                          color: Colors.black,
-                          size: 65,
-                        ),
-                        Expanded(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Row(
-                                children: <Widget>[
-                                  Text(
-                                    'Name(Incomplete)',
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width:30,
-                                  ),
-                                  Text('Active 2 hrs ago'),
-                                ],
-                              ),
-                              Text(
-                                ' when will you complete?',
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
                 ],
               ),
             ),

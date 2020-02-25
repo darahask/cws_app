@@ -14,7 +14,6 @@ class MessagesInfo extends StatefulWidget {
 
 class _MessagesInfoState extends State<MessagesInfo> {
 
-  final messageTextController = TextEditingController();
   final _auth = FirebaseAuth.instance;
   String messageText;
 
@@ -83,7 +82,7 @@ class MessagesStream extends StatelessWidget {
         }
         return Expanded(
           child: ListView(
-            padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
+//            padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
             children: messageBubbles,
           ),
         );

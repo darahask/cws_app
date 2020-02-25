@@ -1,9 +1,9 @@
 import 'package:cws_app/employee_chat.dart';
 import 'package:cws_app/employee_classes/edash_info.dart';
 import 'package:cws_app/employee_classes/sales_registration.dart';
-import 'package:cws_app/info_screens/feed_info.dart';
-import 'package:cws_app/info_screens/employee_info.dart';
 import 'package:flutter/material.dart';
+
+String TYPE;
 
 class EmployeeInfoPage extends StatefulWidget {
 
@@ -17,7 +17,7 @@ class EmployeeInfoPage extends StatefulWidget {
 class _EmployeeInfoPageState extends State<EmployeeInfoPage> {
 
   int num = 0;
-  final widgets = [ EmployeeDashboard(),EmployeeChat()];
+  final widgets = [ EmployeeDashboard(TYPE),EmployeeChat(TYPE)];
   final items_b = [
     BottomNavigationBarItem(
       icon: Icon(
@@ -36,7 +36,7 @@ class _EmployeeInfoPageState extends State<EmployeeInfoPage> {
       ),
     )
   ];
-  final widgets1 = [ EmployeeDashboard(),EmployeeChat(),SalesRegister()];
+  final widgets1 = [ EmployeeDashboard('Sales Employee'),EmployeeChat('Sales Employee'),SalesRegister()];
   final items_b1 = [
     BottomNavigationBarItem(
       icon: Icon(
@@ -64,13 +64,20 @@ class _EmployeeInfoPageState extends State<EmployeeInfoPage> {
     ),
   ];
 
+
+  @override
+  void initState() {
+    super.initState();
+    TYPE = widget.type;
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: (widget.type == 'sales')?widgets1[num]:widgets[num],
+        body: (widget.type == 'Sales Employee')?widgets1[num]:widgets[num],
         bottomNavigationBar: BottomNavigationBar(
-          items: (widget.type == 'sales')?items_b1:items_b,
+          items: (widget.type == 'Sales Employee')?items_b1:items_b,
           onTap: (a) {
             setState(() {
               num = a;

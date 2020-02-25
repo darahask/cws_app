@@ -36,3 +36,11 @@ const kTextFieldDecoration = InputDecoration(
     borderRadius: BorderRadius.all(Radius.circular(32.0)),
   ),
 );
+
+class Choices{
+  static const String fw = 'Employee Details';
+
+  static const List<String> clist = [
+    fw
+  ];
+}

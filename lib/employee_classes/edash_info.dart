@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
 class EmployeeDashboard extends StatefulWidget {
+
+  EmployeeDashboard(this.type);
+  final String type;
+
   @override
   _EmployeeDashboardState createState() => _EmployeeDashboardState();
 }
@@ -11,155 +15,108 @@ class _EmployeeDashboardState extends State<EmployeeDashboard> {
     return Scaffold(
       body: Column(
         children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Center(
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.all(32.0),
               child: Text(
-                'Dashboard',
+                "DASHBOARD",
                 style: TextStyle(
+                  color: Color(0xff034198),
                   fontWeight: FontWeight.bold,
                   fontSize: 32,
-                  color: Color(0xff034198),
+                  letterSpacing: .7,
+                  shadows: kElevationToShadow[4],
                 ),
               ),
             ),
           ),
-          Row(
-            children: <Widget>[
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    height: 40,
-                    decoration: BoxDecoration(
-                      boxShadow: kElevationToShadow[8],
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(10),
-                      ),
-                      color: Colors.white,
-                    ),
-                    child: Center(
-                      child: Text(
-                        'Upcoming Work',
-                        style: TextStyle(color: Colors.black, fontSize: 18),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    height: 40,
-                    decoration: BoxDecoration(
-                      boxShadow: kElevationToShadow[8],
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(10),
-                      ),
-                      color: Colors.white,
-                    ),
-                    child: Center(
-                      child: Text(
-                        'Submit your work',
-                        style: TextStyle(color: Colors.black, fontSize: 18),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(8.0),
             child: Container(
               height: 40,
               decoration: BoxDecoration(
-                boxShadow: kElevationToShadow[8],
+                boxShadow: kElevationToShadow[2],
                 borderRadius: BorderRadius.all(
                   Radius.circular(10),
                 ),
-                gradient: LinearGradient(
-                  colors: [Color(0xff09a5e0), Color(0xff034198)],
-                ),
+                color: Colors.white,
               ),
               child: Center(
                 child: Text(
-                  'Message to the Head of Department',
-                  style: TextStyle(color: Colors.white, fontSize: 18),
+                  'FutureWork: ',
+                  style: TextStyle(
+                      color: Colors.black, fontSize: 18, letterSpacing: .6),
                 ),
               ),
             ),
           ),
-          Row(
-            children: <Widget>[
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    height: 40,
-                    decoration: BoxDecoration(
-                      boxShadow: kElevationToShadow[8],
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(10),
-                      ),
-                      color: Colors.white,
-                    ),
-                    child: Center(
-                      child: Text(
-                        'I have started working',
-                        style: TextStyle(color: Colors.black, fontSize: 18),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    height: 40,
-                    decoration: BoxDecoration(
-                      boxShadow: kElevationToShadow[8],
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(10),
-                      ),
-                      color: Colors.white,
-                    ),
-                    child: Center(
-                      child: Text(
-                        'Completed the work',
-                        style: TextStyle(color: Colors.black, fontSize: 18),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          Expanded(child: Text(''),),
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(8.0),
             child: Container(
               height: 40,
               decoration: BoxDecoration(
-                boxShadow: kElevationToShadow[8],
+                boxShadow: kElevationToShadow[2],
                 borderRadius: BorderRadius.all(
                   Radius.circular(10),
                 ),
-                gradient: LinearGradient(
-                  colors: [Color(0xff09a5e0), Color(0xff034198)],
-                ),
+                color: Colors.white,
               ),
               child: Center(
                 child: Text(
-                  'Message to CEO',
-                  style: TextStyle(color: Colors.white, fontSize: 18),
+                  'PresentWork: ',
+                  style: TextStyle(
+                      color: Colors.black, fontSize: 18, letterSpacing: .6),
                 ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.all(8),
+            child: Container(
+              height: MediaQuery.of(context).size.height / 3,
+              decoration: BoxDecoration(
+                boxShadow: kElevationToShadow[2],
+                borderRadius: BorderRadius.all(
+                  Radius.circular(10),
+                ),
+                color: Colors.white,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      'Salary: (In Rupees)',
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
+                    ),
+                  ),
+                  Center(
+                    child: Text(
+                      '2000',
+                      style: TextStyle(
+                        fontSize: 48,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xff034198),
+                        letterSpacing: 1
+                      ),
+                    ),
+
+                  ),
+                ],
               ),
             ),
           )
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        elevation: 4,
+        child: Icon(
+          Icons.assignment_turned_in,
+        ),
       ),
     );
   }
