@@ -1,6 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cws_app/client_classes/cstatus_info.dart';
+import 'package:cws_app/info_screens/client_data_editor.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+
+final fireStore = Firestore.instance;
+FirebaseUser loggedInUser;
 
 class StatusInfo extends StatefulWidget {
   @override
@@ -8,70 +14,110 @@ class StatusInfo extends StatefulWidget {
 }
 
 class _StatusInfoState extends State<StatusInfo> {
+
+  final _auth = FirebaseAuth.instance;
+  String messageText;
+
+  @override
+  void initState() {
+    super.initState();
+    getCurrentUser();
+  }
+
+  void getCurrentUser() async{
+    try {
+      var user = await _auth.currentUser();
+      if (user != null) {
+        loggedInUser = user;
+      }
+    }catch(e){
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: CustomScrollView(
-        slivers: <Widget>[
-          SliverList(
-            delegate: SliverChildListDelegate(
-              [
-                SizedBox(height: 10,),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: Center(
-                          child: Text(
-                            'Working Status',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 32,
-                              color: Color(0xff034198),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Icon(
-                        Icons.more_vert,
-                      ),
-                    ],
-                  ),
-                ),
-                StatusContainer(),
-                StatusContainer(),
-                StatusContainer(),
-                StatusContainer(),
-                StatusContainer(),
-                StatusContainer(),
-                StatusContainer(),
-                StatusContainer(),
-                StatusContainer(),
-              ],
+      appBar: AppBar(
+        title: Center(
+          child: Text(
+            'Working Status',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 32,
+              color: Color(0xff034198),
             ),
-          )
+          ),
+        ),
+        backgroundColor: Colors.white,
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          MessagesStream(),
         ],
       ),
     );
   }
 }
 
+class MessagesStream extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<QuerySnapshot>(
+      stream: fireStore.collection('Client').snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Center(
+              child: CircularProgressIndicator(
+                backgroundColor: Color(0xff034198),
+              ),
+            ),
+          );
+        }
+        final messages = snapshot.data.documents.reversed;
+        List<StatusContainer> container = [];
+        for (var snap in messages) {
+
+          String overalldevstatus = (snap.data['overalldevstatus'] == null)?'null':snap.data['overalldevstatus'];
+          String name = (snap.data['name'] == null)?'null':snap.data['name'];
+          int payper = (snap.data['payper'] == null)?0:snap.data['payper'];
+          int proper = (snap.data['proper'] == null)?0:snap.data['proper'];
+          final c = StatusContainer(payper:payper,proper:proper,overalldevstatus:overalldevstatus,uid: snap.documentID,name:name);
+
+          container.add(c);
+        }
+        return Expanded(
+          child: ListView(
+//            padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
+            children: container,
+          ),
+        );
+      },
+    );
+  }
+}
+
 class StatusContainer extends StatelessWidget {
-  const StatusContainer({
-    Key key,
-  }) : super(key: key);
+
+  final String overalldevstatus,uid,name;
+  final int payper, proper;
+
+  StatusContainer({this.overalldevstatus, this.payper, this.proper,this.uid,this.name});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.only(top: 8.0),
       child: GestureDetector(
         onTap: (){
-          Navigator.push(context, MaterialPageRoute(builder: (context)=> ClientStatus()));
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>DataEditor(uid)));
         },
         child: Container(
-          height: 80,
+          height: 90,
           decoration: BoxDecoration(
             color: Colors.white,
             boxShadow: kElevationToShadow[2],
@@ -87,26 +133,17 @@ class StatusContainer extends StatelessWidget {
               Flexible(
                 flex: 2,
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
-                    Text(
-                      'Application Name (Client Name)',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                        color: Colors.black,
-                      ),
-                    ),
                     Row(
                       children: <Widget>[
                         Expanded(
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: LinearProgressIndicator(
-                              value: 0.75,
-                              valueColor:
-                                  AlwaysStoppedAnimation<Color>(
-                                      Color(0xff034198)),
+                              value: proper/100,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                  Color(0xff034198)),
                               backgroundColor: Colors.grey[300],
                             ),
                           ),
@@ -115,17 +152,38 @@ class StatusContainer extends StatelessWidget {
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: LinearProgressIndicator(
-                              value: 0.75,
-                              valueColor:
-                                  AlwaysStoppedAnimation<Color>(
-                                      Color(0xff09a5e0)),
+                              value: payper/100,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                  Color(0xff09a5e0)),
                               backgroundColor: Colors.grey[300],
                             ),
                           ),
                         ),
                       ],
                     ),
-                    Text('Under Development')
+                    Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: Text('Process-' + proper.toString()),
+                          ),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: Text('Payment-' + payper.toString()),
+                          ),
+                        )
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        Text(name),
+                        Text(overalldevstatus),
+                      ],
+                    )
                   ],
                 ),
               ),

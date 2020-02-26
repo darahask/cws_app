@@ -1,4 +1,11 @@
+import 'dart:math';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
+
+final fireStore = Firestore.instance;
+FirebaseUser loggedInUser;
 
 class EmployeeDashboard extends StatefulWidget {
 
@@ -10,6 +17,35 @@ class EmployeeDashboard extends StatefulWidget {
 }
 
 class _EmployeeDashboardState extends State<EmployeeDashboard> {
+
+  String pw = 'Loading',fw = "Loading",sal = 'Loading';
+  final _auth = FirebaseAuth.instance;
+
+  @override
+  void initState() {
+    super.initState();
+    getCurrentUser();
+  }
+
+  void getCurrentUser() async{
+    try {
+      var user = await _auth.currentUser();
+      if (user != null) {
+        loggedInUser = user;
+        var snap = await Firestore.instance.collection(widget.type).document(loggedInUser.uid).get();
+        setState(() {
+          if(snap!=null){
+            pw = (snap.data['presentwork'] == null)?'null':snap.data['presentwork'];
+            fw = (snap.data['futurework'] == null)?'null':snap.data['futurework'];
+            sal = (snap.data['salary'] == null)?'null':snap.data['salary'];
+          }
+        });
+      }
+    }catch(e){
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,7 +79,7 @@ class _EmployeeDashboardState extends State<EmployeeDashboard> {
               ),
               child: Center(
                 child: Text(
-                  'FutureWork: ',
+                  'FutureWork: ' + fw,
                   style: TextStyle(
                       color: Colors.black, fontSize: 18, letterSpacing: .6),
                 ),
@@ -63,7 +99,7 @@ class _EmployeeDashboardState extends State<EmployeeDashboard> {
               ),
               child: Center(
                 child: Text(
-                  'PresentWork: ',
+                  'PresentWork: ' + pw,
                   style: TextStyle(
                       color: Colors.black, fontSize: 18, letterSpacing: .6),
                 ),
@@ -95,7 +131,7 @@ class _EmployeeDashboardState extends State<EmployeeDashboard> {
                   ),
                   Center(
                     child: Text(
-                      '2000',
+                      sal,
                       style: TextStyle(
                         fontSize: 48,
                         fontWeight: FontWeight.bold,
@@ -112,7 +148,16 @@ class _EmployeeDashboardState extends State<EmployeeDashboard> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () async{
+          var now = DateTime.now();
+          String url = 'mailto:mcogentweb@gmail.com?subject=$pw submission';
+          if (await canLaunch(url)) {
+            await launch(url);
+            await Firestore.instance.collection(widget.type).document(loggedInUser.uid).updateData({'presentworkstatus':'submitted on ($now)'});
+          } else {
+            throw 'Could not launch $url';
+          }
+        },
         elevation: 4,
         child: Icon(
           Icons.assignment_turned_in,

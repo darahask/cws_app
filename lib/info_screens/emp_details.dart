@@ -75,8 +75,13 @@ class _AdminEmployeeDashState extends State<AdminEmployeeDash> {
                   MaterialButton(
                     color: Colors.white,
                     child: Text('Change'),
-                    onPressed: (){
-
+                    onPressed: () async{
+                      try{
+                        await Firestore.instance.collection(widget.type).document(widget.uid).updateData({'presentwork':pw});
+                        getCurrentUser();
+                      }catch(e){
+                        print(e);
+                      }
                     },
                   ),
                 ],
@@ -140,8 +145,13 @@ class _AdminEmployeeDashState extends State<AdminEmployeeDash> {
                   MaterialButton(
                     color: Colors.white,
                     child: Text('Change'),
-                    onPressed: (){
-
+                    onPressed: () async{
+                      try{
+                        await Firestore.instance.collection(widget.type).document(widget.uid).updateData({'futurework':fw});
+                        getCurrentUser();
+                      }catch(e){
+                        print(e);
+                      }
                     },
                   ),
                 ],

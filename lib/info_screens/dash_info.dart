@@ -1,12 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cws_app/info_screens/status_info.dart';
+import 'package:cws_app/adminsprivate/adminschat.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-final fireStore = Firestore.instance;
-FirebaseUser loggedInUser;
-
 class DashInfo extends StatefulWidget {
+
   @override
   _DashInfoState createState() => _DashInfoState();
 }
@@ -14,23 +12,47 @@ class DashInfo extends StatefulWidget {
 class _DashInfoState extends State<DashInfo> {
 
   final _auth = FirebaseAuth.instance;
-  String messageText;
+  final firestore = Firestore.instance;
+  String type;
 
-  @override
-  void initState() {
-    super.initState();
-    getCurrentUser();
-  }
-
-  void getCurrentUser() async{
-    try {
-      var user = await _auth.currentUser();
-      if (user != null) {
-        loggedInUser = user;
-      }
+  void getType() async{
+    try{
+        var user = await _auth.currentUser();
+        var data = await firestore.collection('Over all Admin').getDocuments();
+        var data2 = await firestore.collection('Design Admin').getDocuments();
+        var data3 = await firestore.collection('Development Admin').getDocuments();
+        for( var doc in data.documents){
+          print(doc.documentID);
+          if(doc.documentID == user.uid){
+            print(doc.documentID);
+            setState(() {
+              type = 'overall';
+            });
+          }
+        }
+        for( var doc in data2.documents){
+          if(doc.documentID == user.uid){
+            setState(() {
+              type = 'design';
+            });
+          }
+        }
+        for( var doc in data3.documents){
+          if(doc.documentID == user.uid){
+            setState(() {
+              type = 'development';
+            });
+          }
+        }
     }catch(e){
       print(e);
     }
+  }
+
+  @override
+  void initState() {
+    getType();
+    super.initState();
   }
 
   @override
@@ -124,102 +146,129 @@ class _DashInfoState extends State<DashInfo> {
                       ),
                     ),
                   ),
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 0, vertical: 16),
-                    child: Container(
-                      height: 90,
-                      decoration: BoxDecoration(
-                          boxShadow: kElevationToShadow[2],
-                          color: Colors.white),
-                      child: Row(
-                        children: <Widget>[
-                          Icon(
-                            Icons.person,
-                            color: Colors.black,
-                            size: 60,
-                          ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Row(
-                                children: <Widget>[
-                                  Text(
-                                    'Designing Admin',
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width:
-                                        MediaQuery.of(context).size.width / 5.4,
-                                  ),
-                                  Text('Active now')
-                                ],
-                              ),
-                              Text(
-                                '15 completed their task today sir.',
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding:
-                    const EdgeInsets.symmetric(horizontal: 0, vertical: 16),
-                    child: Container(
-                      height: 90,
-                      decoration: BoxDecoration(
-                          boxShadow: kElevationToShadow[2],
-                          color: Colors.white),
-                      child: Row(
-                        children: <Widget>[
-                          Icon(
-                            Icons.person,
-                            color: Colors.black,
-                            size: 60,
-                          ),
-                          Expanded(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Row(
-                                  children: <Widget>[
-                                    Text(
-                                      'Development Admin',
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width:20,
-                                    ),
-                                    Text(
-                                        'Active 2 mins ago'
-                                    ),
-                                  ],
-                                ),
-                                Text(
-                                  'What is the working status mam?',
-                                ),
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
+                  (type == 'overall')?ChatBox(type):Container(),
+                  (type == 'overall')?ChatBox2(type):Container(),
+                  (type == 'design')?ChatBox(type):Container(),
+                  (type == 'development')?ChatBox(type):Container(),
                   SizedBox(height: 16,),
                 ],
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class ChatBox extends StatefulWidget {
+   final String type;
+   ChatBox(this.type);
+
+  @override
+  _ChatBoxState createState() => _ChatBoxState();
+}
+
+class _ChatBoxState extends State<ChatBox> {
+
+  String name='loading',chatcode;
+
+  void decideInit(String type){
+    if(type == 'overall'){
+      name = 'Design Admin';
+      chatcode = 'DesignAll';
+    }else if( type == 'design'){
+      name = 'Prithvi Sir';
+      chatcode = 'DesignAll';
+    }else{
+      print(widget.type);
+      name = 'Prithvi Sir';
+      chatcode = 'DevelopAll';
+    }
+
+  }
+
+  @override
+  void initState() {
+    decideInit(widget.type);
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding:
+          const EdgeInsets.symmetric(horizontal: 0, vertical: 16),
+      child: GestureDetector(
+        onTap: (){
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>AdminsChat(chatcode)));
+        },
+        child: Container(
+          height: 90,
+          decoration: BoxDecoration(
+              boxShadow: kElevationToShadow[2],
+              color: Colors.white),
+          child: Row(
+            children: <Widget>[
+              Icon(
+                Icons.person,
+                color: Colors.black,
+                size: 60,
+              ),
+              Text(
+                name,
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class ChatBox2 extends StatefulWidget {
+  final String type;
+  ChatBox2(this.type);
+
+  @override
+  _ChatBox2State createState() => _ChatBox2State();
+}
+
+class _ChatBox2State extends State<ChatBox2> {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding:
+      const EdgeInsets.symmetric(horizontal: 0, vertical: 16),
+      child: GestureDetector(
+        onTap: (){
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>AdminsChat('DevelopAll')));
+        },
+        child: Container(
+          height: 90,
+          decoration: BoxDecoration(
+              boxShadow: kElevationToShadow[2],
+              color: Colors.white),
+          child: Row(
+            children: <Widget>[
+              Icon(
+                Icons.person,
+                color: Colors.black,
+                size: 60,
+              ),
+              Text(
+                'Development Admin',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -28,6 +28,9 @@ class _ChatScreenState extends State<Chat> {
       var user = await _auth.currentUser();
       if (user != null) {
         loggedInUser = user;
+        setState(() {
+
+        });
       }
     }catch(e){
       print(e);
@@ -43,7 +46,7 @@ class _ChatScreenState extends State<Chat> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            MessagesStream(),
+            (loggedInUser != null)?MessagesStream():Container(),
             Container(
               decoration: kMessageContainerDecoration,
               child: Row(
