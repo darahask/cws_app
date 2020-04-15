@@ -16,6 +16,9 @@ class _ChatScreenState extends State<Chat> {
   final messageTextController = TextEditingController();
   final _auth = FirebaseAuth.instance;
   String messageText;
+  String uistatus = 'loading';
+  String devstatus = 'loading';
+  String status = 'Ui Admin and Head';
 
   @override
   void initState() {
@@ -28,8 +31,26 @@ class _ChatScreenState extends State<Chat> {
       var user = await _auth.currentUser();
       if (user != null) {
         loggedInUser = user;
+        var snap = await Firestore.instance
+            .collection('Client')
+            .document(loggedInUser.uid)
+            .get();
         setState(() {
-
+          if (snap != null) {
+            uistatus = (snap.data['uistatus'] == null)
+                ? 'null'
+                : snap.data['uistatus'];
+            devstatus = (snap.data['devstatus'] == null)
+                ? 'null'
+                : snap.data['devstatus'];
+          }
+          if(uistatus == 'loading' && devstatus == 'loading'){
+            status = 'loading';
+          }else if(uistatus.toLowerCase() != 'done'){
+            status = 'Chat with UI Designer and Head';
+          }else{
+            status = 'Chat with Developer Manager and Head';
+          }
         });
       }
     }catch(e){
@@ -41,7 +62,7 @@ class _ChatScreenState extends State<Chat> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(title: Text('Chat with Admins'),),
+        appBar: AppBar(title: Text(status, style: TextStyle(fontFamily: 'OpenSans'),),leading: Icon(Icons.message),),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.stretch,
