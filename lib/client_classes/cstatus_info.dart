@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cws_app/info_screens/admin_client.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -16,7 +17,8 @@ class _ClientStatusState extends State<ClientStatus> {
   String name = 'loading',
       overalldevstatus = 'loading',
       uistatus = 'loading',
-      devstatus = 'loading';
+      devstatus = 'loading',
+      mobile = 'loading';
   int payper = 0, proper = 0;
   String uiimguri = 'loading', devimguri = 'loading';
 
@@ -59,6 +61,8 @@ class _ClientStatusState extends State<ClientStatus> {
             devimguri = (snap.data['devimageuri'] == null)
                 ? 'null'
                 : snap.data['devimageuri'];
+            mobile =
+                (snap.data['mobile'] == null) ? 'null' : snap.data['mobile'];
           }
         });
       }
@@ -90,18 +94,20 @@ class _ClientStatusState extends State<ClientStatus> {
                   ),
                 ),
               ),
-              // Center(
-              //   child: Text(
-              //     'Pack Selected',
-              //     style: TextStyle(
-              //       color: Colors.black,
-              //       fontSize: 18,
-              //       fontWeight: FontWeight.bold,
-              //     ),
-              //   ),
-              // ),
+              Center(
+                child: Text(
+                  'Id: '+ ((loggedInUser != null)?loggedInUser.uid:'loading'),
+                  style: TextStyle(fontFamily: 'OpenSans'),
+                ),
+              ),
+              Center(
+                child: Text(
+                  'Mobile: '+mobile,
+                  style: TextStyle(fontFamily: 'OpenSans'),
+                ),
+              ),
               SizedBox(
-                height: 10,
+                height: 15,
               ),
               StatusContainer(
                   payper: payper,
@@ -169,10 +175,9 @@ class _ClientStatusState extends State<ClientStatus> {
                           },
                           child: Container(
                             decoration: BoxDecoration(
-                              color: Colors.white,
-                              boxShadow: kElevationToShadow[2],
-                              borderRadius: BorderRadius.circular(10)
-                            ),
+                                color: Colors.white,
+                                boxShadow: kElevationToShadow[2],
+                                borderRadius: BorderRadius.circular(10)),
                             child: Column(
                               children: <Widget>[
                                 Expanded(
@@ -198,14 +203,15 @@ class _ClientStatusState extends State<ClientStatus> {
                   ],
                 ),
               ),
-              SizedBox(height: 8,),
+              SizedBox(
+                height: 8,
+              ),
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: kElevationToShadow[2],
-                  borderRadius: BorderRadius.circular(10)
-                ),
-                margin: EdgeInsets.symmetric(horizontal:8),
+                    color: Colors.white,
+                    boxShadow: kElevationToShadow[2],
+                    borderRadius: BorderRadius.circular(10)),
+                margin: EdgeInsets.symmetric(horizontal: 8),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
@@ -243,19 +249,22 @@ class _ClientStatusState extends State<ClientStatus> {
                   ],
                 ),
               ),
-              SizedBox(height: 10,),
+              SizedBox(
+                height: 10,
+              ),
               Image(
                 image: NetworkImage(uiimguri),
                 fit: BoxFit.fill,
               ),
-              SizedBox(height: 10,),
+              SizedBox(
+                height: 10,
+              ),
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: kElevationToShadow[2],
-                  borderRadius: BorderRadius.circular(10)
-                ),
-                margin: EdgeInsets.symmetric(horizontal:8),
+                    color: Colors.white,
+                    boxShadow: kElevationToShadow[2],
+                    borderRadius: BorderRadius.circular(10)),
+                margin: EdgeInsets.symmetric(horizontal: 8),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
@@ -293,7 +302,9 @@ class _ClientStatusState extends State<ClientStatus> {
                   ],
                 ),
               ),
-              SizedBox(height: 10,),
+              SizedBox(
+                height: 10,
+              ),
               Image(
                 image: NetworkImage(devimguri),
                 fit: BoxFit.fill,
@@ -318,7 +329,7 @@ class StatusContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal:8),
+      margin: EdgeInsets.symmetric(horizontal: 8),
       height: 90,
       decoration: BoxDecoration(
         color: Colors.white,
@@ -345,8 +356,8 @@ class StatusContainer extends StatelessWidget {
                         padding: const EdgeInsets.all(8.0),
                         child: LinearProgressIndicator(
                           value: proper / 100,
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                              Color(0xff034198)),
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Color(0xff034198)),
                           backgroundColor: Colors.grey[300],
                         ),
                       ),
@@ -356,8 +367,8 @@ class StatusContainer extends StatelessWidget {
                         padding: const EdgeInsets.all(8.0),
                         child: LinearProgressIndicator(
                           value: payper / 100,
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                              Color(0xff09a5e0)),
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Color(0xff09a5e0)),
                           backgroundColor: Colors.grey[300],
                         ),
                       ),
@@ -369,23 +380,34 @@ class StatusContainer extends StatelessWidget {
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Text('Process: ' + proper.toString()+ '%',style: TextStyle(fontWeight: FontWeight.bold),),
+                        child: Text(
+                          'Process: ' + proper.toString() + '%',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ),
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Text('Payment: ' + payper.toString() + '%',style: TextStyle(fontWeight: FontWeight.bold),),
+                        child: Text(
+                          'Payment: ' + payper.toString() + '%',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
                       ),
                     )
                   ],
                 ),
-                Row(children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal:8.0),
-                    child: Text(overalldevstatus,style: TextStyle(fontWeight: FontWeight.bold),),
-                  ),
-                ],)
+                Row(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Text(
+                        overalldevstatus,
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ],
+                )
               ],
             ),
           ),

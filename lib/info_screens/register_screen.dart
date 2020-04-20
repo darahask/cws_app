@@ -1,3 +1,4 @@
+import 'package:cws_app/employee_classes/edash_info.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -98,9 +99,10 @@ class _RegisterPageState extends State<RegisterPage> {
                         setState(() {
                           loading = true;
                         });
-                        var x = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+                        
+                        AuthResult x = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
                         if(x!=null){
-                          var user = await _auth.currentUser();
+                          var user = x.user;
                           await firestore.collection(selectedCurrency).document(user.uid).setData({
                             'name': name,
                             'mobile': mobile,
@@ -109,6 +111,8 @@ class _RegisterPageState extends State<RegisterPage> {
                           setState(() {
                             loading = false;
                           });
+                          _auth.signOut();
+                          Navigator.pop(context);
                         }
                       }
                       catch(e){

@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cws_app/info_screens/admin_client.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -20,14 +19,16 @@ class DataEditor extends StatefulWidget {
 }
 
 class _DataEditorState extends State<DataEditor> {
-
   final messageTextController = TextEditingController();
-  final messageTextController2= TextEditingController();
+  final messageTextController2 = TextEditingController();
   final messageTextController3 = TextEditingController();
   final messageTextController4 = TextEditingController();
   final messageTextController5 = TextEditingController();
-  String overalldevstatus='null',uistatus='null',devstatus='null',mobile='null';
-  int payper=0, proper=0;
+  String overalldevstatus = 'null',
+      uistatus = 'null',
+      devstatus = 'null',
+      mobile = 'null';
+  int payper = 0, proper = 0;
 
   final _storage = FirebaseStorage.instance;
   File _image;
@@ -41,11 +42,25 @@ class _DataEditorState extends State<DataEditor> {
   }
 
   Future uploadPic() async {
-    StorageReference reference = _storage.ref().child(_image.path.substring(_image.path.lastIndexOf('/')+1));
+    StorageReference reference = _storage
+        .ref()
+        .child(_image.path.substring(_image.path.lastIndexOf('/') + 1));
     StorageUploadTask uploadTask = reference.putFile(_image);
     await uploadTask.onComplete;
     print('File Uploaded');
     uri = await reference.getDownloadURL();
+  }
+
+  void changeods(String val) {
+    this.overalldevstatus = val;
+  }
+
+  void changeuip(String val) {
+    this.uistatus = val;
+  }
+
+  void changedevp(String val) {
+    this.devstatus = val;
   }
 
   @override
@@ -53,180 +68,99 @@ class _DataEditorState extends State<DataEditor> {
     return Scaffold(
       appBar: AppBar(
         title: Text('DataEditor'),
+        leading: Icon(Icons.assignment),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.done),
+            onPressed: () {
+              fireStore.collection('Client').document(widget.uid).updateData(
+                {
+                  'devstatus': devstatus,
+                  'uistatus': uistatus,
+                  'overalldevstatus': overalldevstatus,
+                  'payper': payper,
+                  'proper': proper
+                },
+              );
+              Navigator.pop(context);
+            },
+          ),
+        ],
       ),
       body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Expanded(
-                child: TextField(
-                  keyboardType: TextInputType.number,
-                  controller: messageTextController,
-                  onChanged: (value) {
-                    proper = int.parse(value);
-                  },
-                  decoration: kMessageTextFieldDecoration.copyWith(
-                    hintText: 'Process Percentage',
-                  ),
-                ),
-              ),
-              FlatButton(
-                onPressed: () {
-                  messageTextController.clear();
-                  fireStore.collection('Client').document(widget.uid).updateData({
-                    'proper':proper,
-                  });
-                },
-                child: Text(
-                  'Send',
-                  style: kSendButtonTextStyle,
-                ),
-              ),
-            ],
+          ListTile(
+            title: TextField(
+              keyboardType: TextInputType.number,
+              onChanged: (val) {
+                payper = int.parse(val);
+              },
+              decoration: InputDecoration(labelText: 'Payment Percentage'),
+            ),
           ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Expanded(
-                child: TextField(
-                  keyboardType: TextInputType.number,
-                  controller: messageTextController2,
-                  onChanged: (value) {
-                    payper = int.parse(value);
-                  },
-                  decoration: kMessageTextFieldDecoration.copyWith(
-                    hintText: 'Payment Percentage',
-                  ),
-                ),
-              ),
-              FlatButton(
-                onPressed: () {
-                  messageTextController2.clear();
-                  fireStore.collection('Client').document(widget.uid).updateData({
-                    'payper':payper,
-                  });
-                },
-                child: Text(
-                  'Send',
-                  style: kSendButtonTextStyle,
-                ),
-              ),
-            ],
+          ListTile(
+            title: TextField(
+              keyboardType: TextInputType.number,
+              onChanged: (val) {
+                proper = int.parse(val);
+              },
+              decoration: InputDecoration(labelText: 'Process Percentage'),
+            ),
           ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Expanded(
-                child: TextField(
-                  controller: messageTextController3,
-                  onChanged: (value) {
-                    overalldevstatus = value;
-                  },
-                  decoration: kMessageTextFieldDecoration.copyWith(
-                    hintText: 'OverAll Dev. Status',
-                  ),
-                ),
-              ),
-              FlatButton(
-                onPressed: () {
-                  messageTextController3.clear();
-                  fireStore.collection('Client').document(widget.uid).updateData({
-                    'overalldevstatus':overalldevstatus,
-                  });
-                },
-                child: Text(
-                  'Send',
-                  style: kSendButtonTextStyle,
-                ),
-              ),
-            ],
+          ListTile(
+            title: DButton(changeods),
+            subtitle: Text('Overall development status'),
           ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Expanded(
-                child: TextField(
-                  controller: messageTextController4,
-                  onChanged: (value) {
-                    uistatus = value;
-                  },
-                  decoration: kMessageTextFieldDecoration.copyWith(
-                    hintText: 'Ui Status',
-                  ),
-                ),
-              ),
-              FlatButton(
-                onPressed: () {
-                  messageTextController4.clear();
-                  fireStore.collection('Client').document(widget.uid).updateData({
-                    'uistatus':uistatus,
-                  });
-                },
-                child: Text(
-                  'Send',
-                  style: kSendButtonTextStyle,
-                ),
-              ),
-            ],
+          ListTile(
+            title: DButton(changeuip),
+            subtitle: Text('UI status'),
           ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Expanded(
-                child: TextField(
-                  controller: messageTextController5,
-                  onChanged: (value) {
-                    devstatus = value;
-                  },
-                  decoration: kMessageTextFieldDecoration.copyWith(
-                    hintText: 'Development Status',
-                  ),
-                ),
-              ),
-              FlatButton(
-                onPressed: () {
-                  messageTextController5.clear();
-                  fireStore.collection('Client').document(widget.uid).updateData({
-                    'devstatus':devstatus
-                  });
-                },
-                child: Text(
-                  'Send',
-                  style: kSendButtonTextStyle,
-                ),
-              ),
-            ],
+          ListTile(
+            title: DButton(changedevp),
+            subtitle: Text('Development status'),
+          ),
+          SizedBox(
+            height: 20,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              FlatButton(
-                onPressed: ()async{
+              RaisedButton(
+                onPressed: () async {
                   await getImage();
                   await uploadPic();
-                  fireStore.collection('Client').document(widget.uid).updateData({
-                    'uiimageuri':uri,
+                  fireStore
+                      .collection('Client')
+                      .document(widget.uid)
+                      .updateData({
+                    'uiimageuri': uri,
                   });
                 },
                 child: Text('Upload UI Image'),
               ),
-              FlatButton(
-                onPressed: ()async{
+              RaisedButton(
+                onPressed: () async {
                   await getImage();
                   await uploadPic();
-                  fireStore.collection('Client').document(widget.uid).updateData({
-                    'devimageuri':uri,
+                  fireStore
+                      .collection('Client')
+                      .document(widget.uid)
+                      .updateData({
+                    'devimageuri': uri,
                   });
                 },
                 child: Text('Upload Dev. Image'),
               ),
-              FlatButton(
+              RaisedButton(
                 onPressed: () async {
-                  var snap = await Firestore.instance.collection('Client').document(widget.uid).get();
-                  if(snap!=null){
-                    mobile = (snap.data['mobile'] == null)?'null':snap.data['mobile'];
+                  var snap = await Firestore.instance
+                      .collection('Client')
+                      .document(widget.uid)
+                      .get();
+                  if (snap != null) {
+                    mobile = (snap.data['mobile'] == null)
+                        ? 'null'
+                        : snap.data['mobile'];
                   }
                   String url = 'tel:$mobile';
                   if (await canLaunch(url)) {
@@ -238,9 +172,83 @@ class _DataEditorState extends State<DataEditor> {
                 child: Text('Call Client'),
               ),
             ],
-          )
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          RaisedButton(
+            color: Colors.redAccent,
+            child: Text(
+              'Click here if Project is completed',
+              style: TextStyle(color: Colors.white),
+            ),
+            onPressed: () {
+              fireStore.collection('Client').document(widget.uid).updateData(
+                {
+                  'devstatus': 'done',
+                  'uistatus': 'done',
+                  'overalldevstatus': 'done',
+                  'payper': 100,
+                  'proper': 100
+                },
+              );
+              fireStore
+                  .collection('Client')
+                  .document(widget.uid)
+                  .collection('messages')
+                  .add({
+                'text': 'Congrats Your Project is Succesfully Completed.',
+                'sender': 'Admin',
+                'timestamp': DateTime.now().millisecondsSinceEpoch.toString(),
+              });
+              Navigator.pop(context);
+            },
+          ),
         ],
       ),
+    );
+  }
+}
+
+class DButton extends StatefulWidget {
+  final func;
+  DButton(this.func);
+  @override
+  _DButtonState createState() => _DButtonState();
+}
+
+class _DButtonState extends State<DButton> {
+  String value = 'Select Item';
+
+  @override
+  Widget build(BuildContext context) {
+    return DropdownButton(
+      value: value,
+      isExpanded: true,
+      items: [
+        DropdownMenuItem(
+          child: Text('Select Item'),
+          value: 'Select Item',
+        ),
+        DropdownMenuItem(
+          child: Text('Started'),
+          value: 'started',
+        ),
+        DropdownMenuItem(
+          child: Text('InProgress'),
+          value: 'inprogress',
+        ),
+        DropdownMenuItem(
+          child: Text('Done'),
+          value: 'done',
+        ),
+      ],
+      onChanged: (val) {
+        widget.func(val);
+        setState(() {
+          value = val;
+        });
+      },
     );
   }
 }

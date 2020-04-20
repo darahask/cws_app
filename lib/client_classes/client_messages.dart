@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cws_app/dm_classes/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 final fireStore = Firestore.instance;
 FirebaseUser loggedInUser;
@@ -12,7 +13,6 @@ class Chat extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<Chat> {
-
   final messageTextController = TextEditingController();
   final _auth = FirebaseAuth.instance;
   String messageText;
@@ -26,7 +26,7 @@ class _ChatScreenState extends State<Chat> {
     getCurrentUser();
   }
 
-  void getCurrentUser() async{
+  void getCurrentUser() async {
     try {
       var user = await _auth.currentUser();
       if (user != null) {
@@ -37,23 +37,26 @@ class _ChatScreenState extends State<Chat> {
             .get();
         setState(() {
           if (snap != null) {
-            uistatus = (snap.data['uistatus'] == null)
+            uistatus = (snap.data['uistatus'] == null || snap.data['uistatus'] == '')
                 ? 'null'
                 : snap.data['uistatus'];
             devstatus = (snap.data['devstatus'] == null)
                 ? 'null'
                 : snap.data['devstatus'];
           }
-          if(uistatus == 'loading' && devstatus == 'loading'){
+          if (uistatus == 'loading' && devstatus == 'loading') {
             status = 'loading';
-          }else if(uistatus.toLowerCase() != 'done'){
+          } else if (uistatus.toLowerCase() != 'done') {
             status = 'Chat with UI Designer and Head';
-          }else{
-            status = 'Chat with Developer Manager and Head';
+          } else {
+            if(uistatus.toLowerCase() == 'done' && devstatus.toLowerCase() == 'done')
+              status = 'Chat with Admin';
+            else
+              status = 'Chat with Developer Manager and Admin';
           }
         });
       }
-    }catch(e){
+    } catch (e) {
       print(e);
     }
   }
@@ -62,12 +65,33 @@ class _ChatScreenState extends State<Chat> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(title: Text(status, style: TextStyle(fontFamily: 'OpenSans'),),leading: Icon(Icons.message),),
+        appBar: AppBar(
+          title: FittedBox(
+              child: Text(
+              status,
+              style: TextStyle(fontFamily: 'OpenSans'),
+            ),
+          ),
+          leading: Icon(Icons.message),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.phone),
+              onPressed: () async{
+                const url = 'tel:+917080855524';
+                if (await canLaunch(url)) {
+                  await launch(url);
+                } else {
+                  throw 'Could not launch $url';
+                }
+              },
+            ),
+          ],
+        ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            (loggedInUser != null)?MessagesStream():Container(),
+            (loggedInUser != null) ? MessagesStream() : Container(),
             Container(
               decoration: kMessageContainerDecoration,
               child: Row(
@@ -85,10 +109,17 @@ class _ChatScreenState extends State<Chat> {
                   FlatButton(
                     onPressed: () {
                       messageTextController.clear();
-                      fireStore.collection('Client').document(loggedInUser.uid).collection('messages').add({
+                      fireStore
+                          .collection('Client')
+                          .document(loggedInUser.uid)
+                          .collection('messages')
+                          .add({
                         'text': messageText,
-                        'sender': loggedInUser == null? 'Anonymous':loggedInUser.email,
-                        'timestamp': DateTime.now().millisecondsSinceEpoch.toString(),
+                        'sender': loggedInUser == null
+                            ? 'Anonymous'
+                            : loggedInUser.email,
+                        'timestamp':
+                            DateTime.now().millisecondsSinceEpoch.toString(),
                       });
                     },
                     child: Text(
@@ -106,12 +137,16 @@ class _ChatScreenState extends State<Chat> {
   }
 }
 
-
 class MessagesStream extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: fireStore.collection('Client').document(loggedInUser.uid).collection('messages').orderBy('timestamp',descending: false).snapshots(),
+      stream: fireStore
+          .collection('Client')
+          .document(loggedInUser.uid)
+          .collection('messages')
+          .orderBy('timestamp', descending: false)
+          .snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return Padding(
@@ -129,7 +164,8 @@ class MessagesStream extends StatelessWidget {
           final messageText = message.data['text'];
           final messageSender = message.data['sender'];
 
-          final currentUser = loggedInUser == null? 'Anonymous':loggedInUser.email;
+          final currentUser =
+              loggedInUser == null ? 'Anonymous' : loggedInUser.email;
 
           final messageBubble = MessageBubble(
             sender: messageSender,
@@ -164,7 +200,7 @@ class MessageBubble extends StatelessWidget {
       padding: EdgeInsets.all(10.0),
       child: Column(
         crossAxisAlignment:
-        isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+            isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: <Widget>[
           Text(
             sender,
@@ -176,16 +212,16 @@ class MessageBubble extends StatelessWidget {
           Material(
             borderRadius: isMe
                 ? BorderRadius.only(
-                topLeft: Radius.circular(30.0),
-                bottomLeft: Radius.circular(30.0),
-                bottomRight: Radius.circular(30.0))
+                    topLeft: Radius.circular(30.0),
+                    bottomLeft: Radius.circular(30.0),
+                    bottomRight: Radius.circular(30.0))
                 : BorderRadius.only(
-              bottomLeft: Radius.circular(30.0),
-              bottomRight: Radius.circular(30.0),
-              topRight: Radius.circular(30.0),
-            ),
+                    bottomLeft: Radius.circular(30.0),
+                    bottomRight: Radius.circular(30.0),
+                    topRight: Radius.circular(30.0),
+                  ),
             elevation: 5.0,
-            color: isMe ? Color(0xff034198):Color(0xff09a5e0),
+            color: isMe ? Color(0xff034198) : Color(0xff09a5e0),
             child: Padding(
               padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
               child: Text(

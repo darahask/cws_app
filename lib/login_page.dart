@@ -23,26 +23,25 @@ class _LoginPageState extends State<LoginPage> {
       child: ModalProgressHUD(
         inAsyncCall: loading,
         child: Scaffold(
-          resizeToAvoidBottomPadding: false,
-          body: Center(
+          body: SingleChildScrollView(
             child: Column(
               children: <Widget>[
-                SizedBox(height: 80),
+                SizedBox(height: 40),
                 Image(
-                  width: MediaQuery.of(context).size.width / 1.5,
+                  width: MediaQuery.of(context).size.width / 1.4,
                   image: AssetImage('images/darklogo.png'),
                 ),
-                SizedBox(height: 10,),
                 Text(
                   'Welcome',
                   style: TextStyle(
-                    fontSize: 22,
+                    fontSize: 25,
                     fontWeight: FontWeight.bold,
                     color: Colors.grey[600],
+                    fontFamily: 'OpenSans'
                   ),
                 ),
                 SizedBox(
-                  height: 30,
+                  height: 100,
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 35),
@@ -50,12 +49,8 @@ class _LoginPageState extends State<LoginPage> {
                     onChanged: (val){email = val;},
                     decoration: InputDecoration(
                       filled: true,
+                      labelText: 'Email',
                       fillColor: Colors.grey[300],
-                      hintText: 'Email or ID',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
-                        borderSide: BorderSide.none,
-                      ),
                     ),
                   ),
                 ),
@@ -70,14 +65,10 @@ class _LoginPageState extends State<LoginPage> {
                     decoration: InputDecoration(
                         filled: true,
                         fillColor: Colors.grey[300],
-                        hintText: 'Passcode',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
-                          borderSide: BorderSide.none,
-                        )),
+                        labelText: 'Passcode',
+                       ),
                   ),
                 ),
-                SizedBox(height: 20,),
                 Padding(
                   padding: const EdgeInsets.all(35),
                   child: GestureDetector(
@@ -128,7 +119,7 @@ class _LoginPageState extends State<LoginPage> {
                       }
                     },
                     child: Container(
-                      height: 50,
+                      height: 60,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.horizontal(left: Radius.circular(10),right: Radius.circular(10),),
                         gradient: LinearGradient(
@@ -139,8 +130,8 @@ class _LoginPageState extends State<LoginPage> {
                         child: Text(
                           'Login',
                           style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 22
+                              color: Colors.white,
+                              fontSize: 22
                           ),
                         ),
                       ),

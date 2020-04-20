@@ -198,7 +198,7 @@ class _ChatBoxState extends State<ChatBox> {
   Widget build(BuildContext context) {
     return Padding(
       padding:
-          const EdgeInsets.symmetric(horizontal: 0, vertical: 16),
+          const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       child: GestureDetector(
         onTap: (){
           Navigator.push(context, MaterialPageRoute(builder: (context)=>AdminsChat(chatcode)));
@@ -206,8 +206,10 @@ class _ChatBoxState extends State<ChatBox> {
         child: Container(
           height: 90,
           decoration: BoxDecoration(
-              boxShadow: kElevationToShadow[2],
-              color: Colors.white),
+              boxShadow: kElevationToShadow[4],
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+            ),
           child: Row(
             children: <Widget>[
               Icon(
@@ -243,7 +245,7 @@ class _ChatBox2State extends State<ChatBox2> {
   Widget build(BuildContext context) {
     return Padding(
       padding:
-      const EdgeInsets.symmetric(horizontal: 0, vertical: 16),
+      const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       child: GestureDetector(
         onTap: (){
           Navigator.push(context, MaterialPageRoute(builder: (context)=>AdminsChat('DevelopAll')));
@@ -251,8 +253,10 @@ class _ChatBox2State extends State<ChatBox2> {
         child: Container(
           height: 90,
           decoration: BoxDecoration(
-              boxShadow: kElevationToShadow[2],
-              color: Colors.white),
+              boxShadow: kElevationToShadow[4],
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+            ),
           child: Row(
             children: <Widget>[
               Icon(

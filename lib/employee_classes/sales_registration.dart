@@ -73,6 +73,8 @@ class _SalesRegisterState extends State<SalesRegister> {
                           setState(() {
                             loading = false;
                           });
+                          _auth.signOut();
+                          Navigator.pop(context);
                         }
                       }
                       catch(e){

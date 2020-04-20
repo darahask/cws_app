@@ -1,6 +1,5 @@
 import 'package:cws_app/client_classes/client_messages.dart';
 import 'package:cws_app/client_classes/cstatus_info.dart';
-import 'package:cws_app/info_screens/complete_info.dart';
 import 'package:cws_app/info_screens/feed_info.dart';
 import 'package:flutter/material.dart';
 
@@ -11,7 +10,7 @@ class ClientInfo extends StatefulWidget {
 
 class _ClientInfoState extends State<ClientInfo> {
   int num = 0;
-  final widgets = [FeedInfo(),ClientStatus(),Chat(),CompleteInfo()];
+  final widgets = [FeedInfo(),ClientStatus(),Chat()];
 
   @override
   Widget build(BuildContext context) {
@@ -42,14 +41,6 @@ class _ClientInfoState extends State<ClientInfo> {
               ),
               title: Text(
                 'Messages',
-              ),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.assignment_turned_in,
-              ),
-              title: Text(
-                'Completed',
               ),
             ),
           ],

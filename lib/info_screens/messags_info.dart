@@ -13,7 +13,6 @@ class MessagesInfo extends StatefulWidget {
 }
 
 class _MessagesInfoState extends State<MessagesInfo> {
-
   final _auth = FirebaseAuth.instance;
   String messageText;
 
@@ -23,13 +22,13 @@ class _MessagesInfoState extends State<MessagesInfo> {
     getCurrentUser();
   }
 
-  void getCurrentUser() async{
+  void getCurrentUser() async {
     try {
       var user = await _auth.currentUser();
       if (user != null) {
         loggedInUser = user;
       }
-    }catch(e){
+    } catch (e) {
       print(e);
     }
   }
@@ -38,11 +37,19 @@ class _MessagesInfoState extends State<MessagesInfo> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(title: Text('Clients'),),
+        appBar: AppBar(
+          leading: Icon(Icons.people),
+          title: Text(
+            'Clients',
+            style:
+                TextStyle(fontFamily: 'OpenSans', fontWeight: FontWeight.bold),
+          ),
+        ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
+            SizedBox(height: 8,),
             MessagesStream(),
           ],
         ),
@@ -73,16 +80,12 @@ class MessagesStream extends StatelessWidget {
           final cliname = message.data['name'];
           final cliuid = message.documentID;
 
-          final messageBubble = MessageBubble(
-            name: cliname,
-            uid: cliuid
-          );
+          final messageBubble = MessageBubble(name: cliname, uid: cliuid);
 
           messageBubbles.add(messageBubble);
         }
         return Expanded(
           child: ListView(
-//            padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
             children: messageBubbles,
           ),
         );
@@ -92,47 +95,32 @@ class MessagesStream extends StatelessWidget {
 }
 
 class MessageBubble extends StatelessWidget {
-
-  final String name,uid;
-  MessageBubble({this.name,this.uid});
+  final String name, uid;
+  MessageBubble({this.name, this.uid});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: GestureDetector(
-        onTap: (){
-          Navigator.push(context, MaterialPageRoute(builder: (context)=>AdminClient(uid: uid, loggedInUser: loggedInUser)));
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      AdminClient(uid: uid, loggedInUser: loggedInUser)));
         },
         child: Container(
-          height: 90,
-          decoration:
-              BoxDecoration(boxShadow: kElevationToShadow[2], color: Colors.white),
-          child: Row(
-            children: <Widget>[
-              SizedBox(
-                width: 10,
-              ),
-              Icon(
-                Icons.person,
-                color: Colors.black,
-                size: 60,
-              ),
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    Text(
-                      name,
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              )
-            ],
+          decoration: BoxDecoration(
+              boxShadow: kElevationToShadow[2], color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+            ),
+          child: ListTile(
+            leading: Image(
+              image: AssetImage('images/darklogo.png'),
+            ),
+            title: Text(name),
+            subtitle: Text(uid),
           ),
         ),
       ),
