@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -18,7 +17,7 @@ class EmployeeDashboard extends StatefulWidget {
 
 class _EmployeeDashboardState extends State<EmployeeDashboard> {
 
-  String pw = 'Loading',fw = "Loading",sal = 'Loading';
+  String pw = 'Loading',fw = "Loading",sal = 'Loading',name='Loading';
   final _auth = FirebaseAuth.instance;
 
   @override
@@ -38,6 +37,7 @@ class _EmployeeDashboardState extends State<EmployeeDashboard> {
             pw = (snap.data['presentwork'] == null)?'null':snap.data['presentwork'];
             fw = (snap.data['futurework'] == null)?'null':snap.data['futurework'];
             sal = (snap.data['salary'] == null)?'null':snap.data['salary'];
+            name = (snap.data['name'] == null)?'null':snap.data['name'];
           }
         });
       }
@@ -157,6 +157,11 @@ class _EmployeeDashboardState extends State<EmployeeDashboard> {
           } else {
             throw 'Could not launch $url';
           }
+          fireStore.collection(widget.type).document(loggedInUser.uid).collection('messages').add({
+            'text': "Today's work is completed please check the mail, Thankyou.\nID: ${loggedInUser.uid}",
+            'sender': loggedInUser == null? 'Anonymous':loggedInUser.email,
+            'timestamp': DateTime.now().millisecondsSinceEpoch.toString(),
+          },);
         },
         elevation: 4,
         child: Icon(

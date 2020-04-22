@@ -4,8 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 final fireStore = Firestore.instance;
-FirebaseUser loggedInUser;
-String TYPE;
 
 class EmployeeChat extends StatefulWidget {
 
@@ -21,12 +19,13 @@ class _EmployeeChatState extends State<EmployeeChat> {
   final messageTextController = TextEditingController();
   final _auth = FirebaseAuth.instance;
   String messageText;
+  FirebaseUser loggedInUser;
 
   @override
   void initState() {
     super.initState();
     getCurrentUser();
-    TYPE = widget.type;
+    print(widget.type);
   }
 
   void getCurrentUser() async{
@@ -45,47 +44,45 @@ class _EmployeeChatState extends State<EmployeeChat> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(title: Text('Chat with Admins'),),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            (loggedInUser != null)?MessagesStream():Container(),
-            Container(
-              decoration: kMessageContainerDecoration,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Expanded(
-                    child: TextField(
-                      controller: messageTextController,
-                      onChanged: (value) {
-                        messageText = value;
-                      },
-                      decoration: kMessageTextFieldDecoration,
-                    ),
-                  ),
-                  FlatButton(
-                    onPressed: () {
-                      messageTextController.clear();
-                      fireStore.collection(widget.type).document(loggedInUser.uid).collection('messages').add({
-                        'text': messageText,
-                        'sender': loggedInUser == null? 'Anonymous':loggedInUser.email,
-                        'timestamp': DateTime.now().millisecondsSinceEpoch.toString(),
-                      });
+    return Scaffold(
+      appBar: AppBar(title: Text('Chat with Admins'),automaticallyImplyLeading: false,),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          (loggedInUser != null)?MessagesStream(widget.type,loggedInUser):Container(),
+          Container(
+            decoration: kMessageContainerDecoration,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Expanded(
+                  child: TextField(
+                    controller: messageTextController,
+                    onChanged: (value) {
+                      messageText = value;
                     },
-                    child: Text(
-                      'Send',
-                      style: kSendButtonTextStyle,
-                    ),
+                    decoration: kMessageTextFieldDecoration,
                   ),
-                ],
-              ),
+                ),
+                FlatButton(
+                  onPressed: () {
+                    messageTextController.clear();
+                    fireStore.collection(widget.type).document(loggedInUser.uid).collection('messages').add({
+                      'text': messageText,
+                      'sender': loggedInUser == null? 'Anonymous':loggedInUser.email,
+                      'timestamp': DateTime.now().millisecondsSinceEpoch.toString(),
+                    });
+                  },
+                  child: Text(
+                    'Send',
+                    style: kSendButtonTextStyle,
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -93,10 +90,13 @@ class _EmployeeChatState extends State<EmployeeChat> {
 
 
 class MessagesStream extends StatelessWidget {
+  final String type;
+  FirebaseUser loggedInUser;
+  MessagesStream(this.type,this.loggedInUser);
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: fireStore.collection(TYPE).document(loggedInUser.uid).collection('messages').orderBy('timestamp',descending: false).snapshots(),
+      stream: fireStore.collection(type).document(loggedInUser.uid).collection('messages').orderBy('timestamp',descending: false).snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return Padding(

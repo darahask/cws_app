@@ -1,24 +1,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cws_app/employee_chat.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-final fireStore = Firestore.instance;
-FirebaseUser loggedInUser;
-String name='loading',presentwork='loading',futurework='loading',salary='loading';
-
 class AdminEmployeeDash extends StatefulWidget {
-
-  final String uid,type;
+  final String uid, type;
   AdminEmployeeDash({this.uid, this.type});
-
-
 
   @override
   _AdminEmployeeDashState createState() => _AdminEmployeeDashState();
 }
 
 class _AdminEmployeeDashState extends State<AdminEmployeeDash> {
+  final fireStore = Firestore.instance;
+  FirebaseUser loggedInUser;
+  String name = 'loading',
+      presentwork = 'loading',
+      futurework = 'loading',
+      salary = 'loading',
+      salaryPackage = 'loading';
 
   @override
   void initState() {
@@ -26,139 +25,115 @@ class _AdminEmployeeDashState extends State<AdminEmployeeDash> {
     getCurrentUser();
   }
 
-  void getCurrentUser() async{
+  void getCurrentUser() async {
     try {
-     var snap = await Firestore.instance.collection(widget.type).document(widget.uid).get();
-     setState(() {
-       if(snap!=null){
-         name = snap.data['name'];
-         presentwork = (snap.data['presentwork'] == null)?'Set data':snap.data['presentwork'];
-         futurework = (snap.data['futurework'] == null)?'Set data':snap.data['futurework'];
-         salary = (snap.data['salary'] == null)?'Set data':snap.data['salary'];
-       }
-     });
-    }catch(e){
+      var snap = await Firestore.instance
+          .collection(widget.type)
+          .document(widget.uid)
+          .get();
+      setState(() {
+        if (snap != null) {
+          name = snap.data['name'];
+          presentwork = (snap.data['presentwork'] == null)
+              ? 'Set data'
+              : snap.data['presentwork'];
+          futurework = (snap.data['futurework'] == null)
+              ? 'Set data'
+              : snap.data['futurework'];
+          salary =
+              (snap.data['salary'] == null) ? 'Set data' : snap.data['salary'];
+          salaryPackage =
+              (snap.data['salpkg'] == null) ? 'Set data' : snap.data['salpkg'];
+        }
+      });
+    } catch (e) {
       print(e);
     }
   }
 
-  String pw,fw,sal;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(name),),
-      resizeToAvoidBottomPadding: false,
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal:8.0),
-            child: Container(
-              margin: EdgeInsets.only(top: 16,),
+      appBar: AppBar(
+        title: Text(
+          name,
+          style: TextStyle(
+            fontFamily: 'OpenSans',
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            SizedBox(
+              height: 8,
+            ),
+            infoData(
+              presentwork,
+              'Assigned Work',
+            ),
+            infoData(
+              salaryPackage,
+              'Salary Package',
+            ),
+            infoData(
+              salary,
+              'Salary Credited',
+            ),
+            infoData(
+              futurework,
+              'Future Work',
+            ),
+            SizedBox(
+              height: 8,
+            ),
+            Divider(
+              thickness: 2,
+              color: Colors.black87,
+            ),
+            SizedBox(
+              height: 7,
+            ),
+            Container(
               decoration: BoxDecoration(
                 color: Colors.white,
                 boxShadow: kElevationToShadow[4],
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(10),
               ),
-              child: Column(
-                children: <Widget>[
-                  Text('Present Work:'),
-                  Text(presentwork),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal:32.0),
-                    child: TextField(
-                      onChanged: (s){pw = s;},
-                    ),
+              margin: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              child: ListTile(
+                contentPadding: EdgeInsets.symmetric(vertical: 4,horizontal: 10),
+                title: TextField(
+                  decoration: InputDecoration(
+                    labelText: 'Present Work Assignment'
                   ),
-                  MaterialButton(
-                    color: Colors.white,
-                    child: Text('Change'),
-                    onPressed: () async{
-                      try{
-                        await Firestore.instance.collection(widget.type).document(widget.uid).updateData({'presentwork':pw});
-                        getCurrentUser();
-                      }catch(e){
-                        print(e);
-                      }
-                    },
-                  ),
-                ],
+                ),
+                trailing: IconButton(
+                  icon: Icon(Icons.done),
+                  onPressed: (){
+
+                  },
+                ),
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal:8.0),
-            child: Container(
-              margin: EdgeInsets.only(top: 16,),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                boxShadow: kElevationToShadow[4],
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Column(
-                children: <Widget>[
-                  Text('Salary:'),
-                  Text(salary),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal:32.0),
-                    child: TextField(
-                      onChanged: (s){sal = s;},
-                    ),
-                  ),
-                  MaterialButton(
-                    color: Colors.white,
-                    child: Text('Change'),
-                    onPressed: () async{
-                      try{
-                        await Firestore.instance.collection(widget.type).document(widget.uid).updateData({'salary':sal});
-                        getCurrentUser();
-                      }catch(e){
-                        print(e);
-                      }
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal:8.0),
-            child: Container(
-              margin: EdgeInsets.only(top: 16,),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                boxShadow: kElevationToShadow[4],
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Column(
-                children: <Widget>[
-                  Text('Future Work:'),
-                  Text(futurework),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal:32.0),
-                    child: TextField(
-                      onChanged: (s){fw = s;},
-                    ),
-                  ),
-                  MaterialButton(
-                    color: Colors.white,
-                    child: Text('Change'),
-                    onPressed: () async{
-                      try{
-                        await Firestore.instance.collection(widget.type).document(widget.uid).updateData({'futurework':fw});
-                        getCurrentUser();
-                      }catch(e){
-                        print(e);
-                      }
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget infoData(String data, String type) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: kElevationToShadow[4],
+        borderRadius: BorderRadius.circular(10),
+      ),
+      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      child: ListTile(
+        title: Text(data),
+        subtitle: Text(type),
       ),
     );
   }

@@ -120,7 +120,9 @@ class MessageBubble extends StatelessWidget {
               image: AssetImage('images/darklogo.png'),
             ),
             title: Text(name),
-            subtitle: Text(uid),
+            subtitle: FittedBox(
+              child: Text(uid),
+            ),
           ),
         ),
       ),

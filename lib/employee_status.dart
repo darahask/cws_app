@@ -12,7 +12,6 @@ class EmployeeStatus extends StatefulWidget {
 }
 
 class _EmployeeStatusState extends State<EmployeeStatus> {
-
   final _auth = FirebaseAuth.instance;
   String messageText;
 
@@ -22,13 +21,13 @@ class _EmployeeStatusState extends State<EmployeeStatus> {
     getCurrentUser();
   }
 
-  void getCurrentUser() async{
+  void getCurrentUser() async {
     try {
       var user = await _auth.currentUser();
       if (user != null) {
         loggedInUser = user;
       }
-    }catch(e){
+    } catch (e) {
       print(e);
     }
   }
@@ -39,30 +38,38 @@ class _EmployeeStatusState extends State<EmployeeStatus> {
       length: 3,
       child: Scaffold(
         appBar: AppBar(
-          title: Center(
-            child: Text(
-              'Employee Tracking',
-              style: TextStyle(color: Colors.white),
-            ),
+          automaticallyImplyLeading: false,
+          title: Text(
+            'Employee Tracking',
+            style: TextStyle(color: Colors.white),
           ),
           bottom: TabBar(
             tabs: <Widget>[
               Tab(
                 child: Text(
                   "Sales",
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'OpenSans',
+                  ),
                 ),
               ),
               Tab(
                 child: Text(
                   "Design",
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'OpenSans',
+                  ),
                 ),
               ),
               Tab(
                 child: Text(
                   "Development",
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'OpenSans',
+                  ),
                 ),
               ),
             ],
@@ -81,7 +88,6 @@ class _EmployeeStatusState extends State<EmployeeStatus> {
 }
 
 class MessagesStream extends StatelessWidget {
-
   final String type;
   MessagesStream(this.type);
 
@@ -107,9 +113,9 @@ class MessagesStream extends StatelessWidget {
           final cliuid = message.documentID;
 
           final messageBubble = MessageBubble(
-              name: cliname,
-              uid: cliuid,
-              type: type,
+            name: cliname,
+            uid: cliuid,
+            type: type,
           );
 
           messageBubbles.add(messageBubble);
@@ -123,51 +129,38 @@ class MessagesStream extends StatelessWidget {
 }
 
 class MessageBubble extends StatelessWidget {
-
-  final String name,uid,type;
-  MessageBubble({this.name,this.uid,this.type});
+  final String name, uid, type;
+  MessageBubble({this.name, this.uid, this.type});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: GestureDetector(
-        onTap: (){
-          Navigator.push(context, MaterialPageRoute(builder: (context)=>StatusUpdater(uid: uid, loggedInUser: loggedInUser,type:type)));
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => StatusUpdater(
+                      uid: uid, loggedInUser: loggedInUser, type: type)));
         },
         child: Container(
-          height: 90,
-          decoration:
-          BoxDecoration(boxShadow: kElevationToShadow[2], color: Colors.white),
-          child: Row(
-            children: <Widget>[
-              SizedBox(
-                width: 10,
-              ),
-              Icon(
-                Icons.person,
-                color: Colors.black,
-                size: 60,
-              ),
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    Text(
-                      name,
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              )
-            ],
+          decoration: BoxDecoration(
+            boxShadow: kElevationToShadow[2],
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: ListTile(
+            leading: Image(
+              image: AssetImage('images/darklogo.png'),
+            ),
+            title: Text(name),
+            subtitle: FittedBox(
+              child: Text(uid),
+            ),
           ),
         ),
       ),
     );
   }
 }
-

@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 String TYPE;
 
 class EmployeeInfoPage extends StatefulWidget {
-
   final String type;
   EmployeeInfoPage(this.type);
 
@@ -15,28 +14,13 @@ class EmployeeInfoPage extends StatefulWidget {
 }
 
 class _EmployeeInfoPageState extends State<EmployeeInfoPage> {
-
   int num = 0;
-  final widgets = [ EmployeeDashboard(TYPE),EmployeeChat(TYPE)];
-  final items_b = [
-    BottomNavigationBarItem(
-      icon: Icon(
-        Icons.dashboard,
-      ),
-      title: Text(
-        'Dashboard',
-      ),
-    ),
-    BottomNavigationBarItem(
-      icon: Icon(
-        Icons.message,
-      ),
-      title: Text(
-        'Chat'
-      ),
-    )
+
+  final widgets1 = [
+    EmployeeDashboard('Sales Employee'),
+    EmployeeChat('Sales Employee'),
+    SalesRegister()
   ];
-  final widgets1 = [ EmployeeDashboard('Sales Employee'),EmployeeChat('Sales Employee'),SalesRegister()];
   final items_b1 = [
     BottomNavigationBarItem(
       icon: Icon(
@@ -50,34 +34,55 @@ class _EmployeeInfoPageState extends State<EmployeeInfoPage> {
       icon: Icon(
         Icons.message,
       ),
-      title: Text(
-          'Chat'
-      ),
+      title: Text('Chat'),
     ),
     BottomNavigationBarItem(
       icon: Icon(
         Icons.account_circle,
       ),
-      title: Text(
-          'Register'
-      ),
+      title: Text('Register'),
     ),
   ];
 
+  List<Widget> widgets = [];
+  List<BottomNavigationBarItem> items_b = [];
+
+  loadData(String type) {
+    widgets = [EmployeeDashboard(TYPE), EmployeeChat(TYPE)];
+    items_b = [
+      BottomNavigationBarItem(
+        icon: Icon(
+          Icons.dashboard,
+        ),
+        title: Text(
+          'Dashboard',
+        ),
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(
+          Icons.message,
+        ),
+        title: Text('Chat'),
+      )
+    ];
+    setState(() {
+      
+    });
+  }
 
   @override
   void initState() {
     super.initState();
-    TYPE = widget.type;
+    loadData(widget.type);
   }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: (widget.type == 'Sales Employee')?widgets1[num]:widgets[num],
+        body: (widget.type == 'Sales Employee') ? widgets1[num] : widgets[num],
         bottomNavigationBar: BottomNavigationBar(
-          items: (widget.type == 'Sales Employee')?items_b1:items_b,
+          items: (widget.type == 'Sales Employee') ? items_b1 : items_b,
           onTap: (a) {
             setState(() {
               num = a;

@@ -37,7 +37,7 @@ class MainPage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                'One App for all the members of our family',
+                'Your Dreams We Fullfill',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 24,

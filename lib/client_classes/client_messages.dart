@@ -47,7 +47,7 @@ class _ChatScreenState extends State<Chat> {
           if (uistatus == 'loading' && devstatus == 'loading') {
             status = 'loading';
           } else if (uistatus.toLowerCase() != 'done') {
-            status = 'Chat with UI Designer and Head';
+            status = 'Chat with UI Designer and Admin';
           } else {
             if(uistatus.toLowerCase() == 'done' && devstatus.toLowerCase() == 'done')
               status = 'Chat with Admin';
