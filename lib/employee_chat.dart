@@ -91,7 +91,7 @@ class _EmployeeChatState extends State<EmployeeChat> {
 
 class MessagesStream extends StatelessWidget {
   final String type;
-  FirebaseUser loggedInUser;
+  final FirebaseUser loggedInUser;
   MessagesStream(this.type,this.loggedInUser);
   @override
   Widget build(BuildContext context) {

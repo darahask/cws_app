@@ -7,7 +7,6 @@ final fireStore = Firestore.instance;
 FirebaseUser loggedInUser;
 
 class EmployeeDashboard extends StatefulWidget {
-
   EmployeeDashboard(this.type);
   final String type;
 
@@ -16,8 +15,8 @@ class EmployeeDashboard extends StatefulWidget {
 }
 
 class _EmployeeDashboardState extends State<EmployeeDashboard> {
-
-  String pw = 'Loading',fw = "Loading",sal = 'Loading',name='Loading';
+  String pw = 'Loading', fw = "Loading", sal = '0.0', name = 'Loading',salaryPkg = 'Loading';
+  int attendance = 0;
   final _auth = FirebaseAuth.instance;
 
   @override
@@ -26,22 +25,31 @@ class _EmployeeDashboardState extends State<EmployeeDashboard> {
     getCurrentUser();
   }
 
-  void getCurrentUser() async{
+  void getCurrentUser() async {
     try {
       var user = await _auth.currentUser();
       if (user != null) {
         loggedInUser = user;
-        var snap = await Firestore.instance.collection(widget.type).document(loggedInUser.uid).get();
+        var snap = await Firestore.instance
+            .collection(widget.type)
+            .document(loggedInUser.uid)
+            .get();
         setState(() {
-          if(snap!=null){
-            pw = (snap.data['presentwork'] == null)?'null':snap.data['presentwork'];
-            fw = (snap.data['futurework'] == null)?'null':snap.data['futurework'];
-            sal = (snap.data['salary'] == null)?'null':snap.data['salary'];
-            name = (snap.data['name'] == null)?'null':snap.data['name'];
+          if (snap != null) {
+            pw = (snap.data['presentwork'] == null)
+                ? 'null'
+                : snap.data['presentwork'];
+            fw = (snap.data['futurework'] == null)
+                ? 'null'
+                : snap.data['futurework'];
+            sal = (snap.data['salary'] == null) ? '0.0' : snap.data['salary'];
+            name = (snap.data['name'] == null) ? 'null' : snap.data['name'];
+            salaryPkg = (snap.data['salarypackage'] == null) ? 'null' : snap.data['salarypackage'];
+            attendance = (snap.data['attendance'] == null) ? 0 : snap.data['attendance'];
           }
         });
       }
-    }catch(e){
+    } catch (e) {
       print(e);
     }
   }
@@ -107,9 +115,49 @@ class _EmployeeDashboardState extends State<EmployeeDashboard> {
             ),
           ),
           Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              height: 40,
+              decoration: BoxDecoration(
+                boxShadow: kElevationToShadow[2],
+                borderRadius: BorderRadius.all(
+                  Radius.circular(10),
+                ),
+                color: Colors.white,
+              ),
+              child: Center(
+                child: Text(
+                  'SalaryPackage: ' + salaryPkg + '/month',
+                  style: TextStyle(
+                      color: Colors.black, fontSize: 18, letterSpacing: .6),
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              height: 40,
+              decoration: BoxDecoration(
+                boxShadow: kElevationToShadow[2],
+                borderRadius: BorderRadius.all(
+                  Radius.circular(10),
+                ),
+                color: Colors.white,
+              ),
+              child: Center(
+                child: Text(
+                  'Attendance: ' + attendance.toString(),
+                  style: TextStyle(
+                      color: Colors.black, fontSize: 18, letterSpacing: .6),
+                ),
+              ),
+            ),
+          ),
+          Padding(
             padding: EdgeInsets.all(8),
             child: Container(
-              height: MediaQuery.of(context).size.height / 3,
+              height: MediaQuery.of(context).size.height / 3.4,
               decoration: BoxDecoration(
                 boxShadow: kElevationToShadow[2],
                 borderRadius: BorderRadius.all(
@@ -131,15 +179,13 @@ class _EmployeeDashboardState extends State<EmployeeDashboard> {
                   ),
                   Center(
                     child: Text(
-                      sal,
+                      double.parse(sal).truncate().toString(),
                       style: TextStyle(
-                        fontSize: 48,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xff034198),
-                        letterSpacing: 1
-                      ),
+                          fontSize: 48,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xff034198),
+                          letterSpacing: 1),
                     ),
-
                   ),
                 ],
               ),
@@ -148,20 +194,35 @@ class _EmployeeDashboardState extends State<EmployeeDashboard> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () async{
-          var now = DateTime.now();
+        onPressed: () async {
           String url = 'mailto:mcogentweb@gmail.com?subject=$pw submission';
           if (await canLaunch(url)) {
             await launch(url);
-            await Firestore.instance.collection(widget.type).document(loggedInUser.uid).updateData({'presentworkstatus':'submitted on ($now)'});
+            await Firestore.instance
+                .collection(widget.type)
+                .document(loggedInUser.uid)
+                .updateData(
+              {
+                'presentworkstatus':
+                    DateTime.now().millisecondsSinceEpoch.toString(),
+                'attendance': attendance + 1,
+              },
+            );
           } else {
             throw 'Could not launch $url';
           }
-          fireStore.collection(widget.type).document(loggedInUser.uid).collection('messages').add({
-            'text': "Today's work is completed please check the mail, Thankyou.\nID: ${loggedInUser.uid}",
-            'sender': loggedInUser == null? 'Anonymous':loggedInUser.email,
-            'timestamp': DateTime.now().millisecondsSinceEpoch.toString(),
-          },);
+          fireStore
+              .collection(widget.type)
+              .document(loggedInUser.uid)
+              .collection('messages')
+              .add(
+            {
+              'text':
+                  "Today's work is completed please check the mail, Thankyou.\nID: ${loggedInUser.uid}",
+              'sender': loggedInUser == null ? 'Anonymous' : loggedInUser.email,
+              'timestamp': DateTime.now().millisecondsSinceEpoch.toString(),
+            },
+          );
         },
         elevation: 4,
         child: Icon(

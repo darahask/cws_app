@@ -3,8 +3,6 @@ import 'package:cws_app/employee_classes/edash_info.dart';
 import 'package:cws_app/employee_classes/sales_registration.dart';
 import 'package:flutter/material.dart';
 
-String TYPE;
-
 class EmployeeInfoPage extends StatefulWidget {
   final String type;
   EmployeeInfoPage(this.type);
@@ -48,7 +46,7 @@ class _EmployeeInfoPageState extends State<EmployeeInfoPage> {
   List<BottomNavigationBarItem> items_b = [];
 
   loadData(String type) {
-    widgets = [EmployeeDashboard(TYPE), EmployeeChat(TYPE)];
+    widgets = [EmployeeDashboard(type), EmployeeChat(type)];
     items_b = [
       BottomNavigationBarItem(
         icon: Icon(
