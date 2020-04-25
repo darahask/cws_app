@@ -11,18 +11,19 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  
   final _auth = FirebaseAuth.instance;
   final firestore = Firestore.instance;
   bool loading = false;
-  String email,password;
-  
+  String email, password;
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: ModalProgressHUD(
         inAsyncCall: loading,
         child: Scaffold(
+          key: _scaffoldKey,
           body: SingleChildScrollView(
             child: Column(
               children: <Widget>[
@@ -34,11 +35,10 @@ class _LoginPageState extends State<LoginPage> {
                 Text(
                   'Welcome',
                   style: TextStyle(
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.grey[600],
-                    fontFamily: 'OpenSans'
-                  ),
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey[600],
+                      fontFamily: 'OpenSans'),
                 ),
                 SizedBox(
                   height: 100,
@@ -46,7 +46,9 @@ class _LoginPageState extends State<LoginPage> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 35),
                   child: TextField(
-                    onChanged: (val){email = val;},
+                    onChanged: (val) {
+                      email = val;
+                    },
                     decoration: InputDecoration(
                       filled: true,
                       labelText: 'Email',
@@ -61,67 +63,110 @@ class _LoginPageState extends State<LoginPage> {
                   padding: EdgeInsets.symmetric(horizontal: 35),
                   child: TextField(
                     obscureText: true,
-                    onChanged: (val){password = val;},
+                    onChanged: (val) {
+                      password = val;
+                    },
                     decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Colors.grey[300],
-                        labelText: 'Passcode',
-                       ),
+                      filled: true,
+                      fillColor: Colors.grey[300],
+                      labelText: 'Passcode',
+                    ),
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(35),
                   child: GestureDetector(
-                    onTap: ()async{
-                      try{
+                    onTap: () async {
+                      try {
                         setState(() {
                           loading = true;
                         });
-                        var x = await _auth.signInWithEmailAndPassword(email: email, password: password);
-                        if(x!=null){
+                        var x = await _auth.signInWithEmailAndPassword(
+                            email: email, password: password);
+                        if (x != null) {
                           var user = await _auth.currentUser();
-                          var data = await firestore.collection('Over all Admin').getDocuments();
-                          var data2 = await firestore.collection('Design Admin').getDocuments();
-                          var data3 = await firestore.collection('Development Admin').getDocuments();
+                          var data = await firestore
+                              .collection('Over all Admin')
+                              .getDocuments();
+                          var data2 = await firestore
+                              .collection('Design Admin')
+                              .getDocuments();
+                          var data3 = await firestore
+                              .collection('Development Admin')
+                              .getDocuments();
                           print(user.uid);
-                          for( var doc in data.documents){
+                          for (var doc in data.documents) {
                             print(doc.documentID);
-                            if(doc.documentID == user.uid){
+                            if (doc.documentID == user.uid) {
                               print(doc.documentID);
                               setState(() {
                                 loading = false;
                               });
-                              Navigator.pushReplacement(context, MaterialPageRoute(builder:(context)=>InfoMain(type:'overall')));
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          InfoMain(type: 'overall')));
                             }
                           }
-                          for( var doc in data2.documents){
-                            if(doc.documentID == user.uid){
+                          for (var doc in data2.documents) {
+                            if (doc.documentID == user.uid) {
                               setState(() {
                                 loading = false;
                               });
-                              Navigator.pushReplacement(context, MaterialPageRoute(builder:(context)=>InfoMain(type:'design')));
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          InfoMain(type: 'design')));
                             }
                           }
-                          for( var doc in data3.documents){
-                            if(doc.documentID == user.uid){
+                          for (var doc in data3.documents) {
+                            if (doc.documentID == user.uid) {
                               setState(() {
                                 loading = false;
                               });
-                              Navigator.pushReplacement(context, MaterialPageRoute(builder:(context)=>InfoMain(type:'development')));
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          InfoMain(type: 'development')));
                             }
                           }
                           setState(() {
-                            loading=false;
+                            loading = false;
                           });
+                        } else {
+                          setState(() {
+                            loading = false;
+                          });
+                          _scaffoldKey.currentState.showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                  'Wrong Credentials or no internet connection'),
+                            ),
+                          );
                         }
-                      }catch(e){
+                      } catch (e) {
+                        setState(() {
+                          loading = false;
+                        });
                         print(e);
+                        _scaffoldKey.currentState.showSnackBar(
+                          SnackBar(
+                            content: Text(
+                                'Wrong Credentials or no internet connection'),
+                          ),
+                        );
                       }
                     },
                     child: Container(
                       height: 60,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.horizontal(left: Radius.circular(10),right: Radius.circular(10),),
+                        borderRadius: BorderRadius.horizontal(
+                          left: Radius.circular(10),
+                          right: Radius.circular(10),
+                        ),
                         gradient: LinearGradient(
                           colors: [Color(0xff09a5e0), Color(0xff034198)],
                         ),
@@ -129,10 +174,7 @@ class _LoginPageState extends State<LoginPage> {
                       child: Center(
                         child: Text(
                           'Login',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 22
-                          ),
+                          style: TextStyle(color: Colors.white, fontSize: 22),
                         ),
                       ),
                     ),

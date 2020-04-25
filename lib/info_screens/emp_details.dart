@@ -91,13 +91,14 @@ class _AdminEmployeeDashState extends State<AdminEmployeeDash> {
             SizedBox(
               height: 8,
             ),
-            infoData(
-              'Attendance: '+attendance.toString() + ' days/month',
+            infoDataWithReset(
+              'Attendance: ' + attendance.toString() + ' days/month',
               ((DateTime.now().millisecondsSinceEpoch -
                           int.parse(presentWorkStatus)) <=
                       86400)
                   ? 'Yesterdays Work Subbmited on mail'
                   : 'Work delayed or not submitted',
+                'attendance'
             ),
             infoData(
               presentwork,
@@ -107,9 +108,10 @@ class _AdminEmployeeDashState extends State<AdminEmployeeDash> {
               salaryPackage,
               'Salary Package',
             ),
-            infoData(
+            infoDataWithReset(
               salary,
               'Salary Credited',
+              'salary'
             ),
             infoData(
               futurework,
@@ -276,6 +278,36 @@ class _AdminEmployeeDashState extends State<AdminEmployeeDash> {
       child: ListTile(
         title: Text(data),
         subtitle: Text(type),
+      ),
+    );
+  }
+
+  Widget infoDataWithReset(String data, String type, String key) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: kElevationToShadow[4],
+        borderRadius: BorderRadius.circular(10),
+      ),
+      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      child: ListTile(
+        title: Text(data),
+        subtitle: Text(type),
+        trailing: IconButton(
+          icon: Icon(Icons.refresh),
+          onPressed: () {
+            fireStore.collection(widget.type).document(widget.uid).setData({
+              key : 0,
+            }, merge: true);
+            setState(() {
+              if(key == 'salary'){
+                salary = '0';
+              }else{
+                attendance = 0;
+              }
+            });
+          },
+        ),
       ),
     );
   }
