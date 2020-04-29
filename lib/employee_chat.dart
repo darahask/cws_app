@@ -14,7 +14,7 @@ class EmployeeChat extends StatefulWidget {
   _EmployeeChatState createState() => _EmployeeChatState();
 }
 
-class _EmployeeChatState extends State<EmployeeChat> {
+class _EmployeeChatState extends State<EmployeeChat> { 
 
   final messageTextController = TextEditingController();
   final _auth = FirebaseAuth.instance;

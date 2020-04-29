@@ -1,4 +1,3 @@
-import 'package:cws_app/employee_classes/edash_info.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -24,7 +23,9 @@ class _RegisterPageState extends State<RegisterPage> {
     'Development Employee',
     'Design Employee',
     'Development Admin',
-    'Design Admin'
+    'Design Admin',
+    'Client Support',
+    'Sales Representative'
   ];
 
   DropdownButton<String> androidDropdown(currenciesList) {

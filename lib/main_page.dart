@@ -1,6 +1,7 @@
 import 'package:cws_app/client_classes/cLogin_page.dart';
 import 'package:cws_app/employee_classes/elogin_page.dart';
 import 'package:cws_app/login_page.dart';
+import 'package:cws_app/supportclasses/support_login.dart';
 import 'package:flutter/material.dart';
 
 class MainPage extends StatelessWidget {
@@ -18,7 +19,7 @@ class MainPage extends StatelessWidget {
         child: Column(
           children: <Widget>[
             Container(
-              height: MediaQuery.of(context).size.height / 2.5,
+              height: MediaQuery.of(context).size.height / 2.6,
               decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius:
@@ -132,6 +133,38 @@ class MainPage extends StatelessWidget {
                     child: Center(
                         child: Text(
                       'Employee',
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.blueGrey,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 0.6
+                      ),
+                    ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Expanded(
+              child: Center(
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => SupportLogin()));
+                  },
+                  child: Container(
+                    width: MediaQuery.of(context).size.width / 1.5,
+                    height: 60,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.horizontal(
+                        left: Radius.circular(14),
+                        right: Radius.circular(14),
+                      ),
+                    ),
+                    child: Center(
+                        child: Text(
+                      'Support',
                       style: TextStyle(
                           fontSize: 20,
                           color: Colors.blueGrey,
