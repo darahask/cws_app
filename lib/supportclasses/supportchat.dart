@@ -16,18 +16,18 @@ class SupportChat extends StatefulWidget {
 
 class _SupportChatState extends State<SupportChat> {
   FirebaseUser loggedInUser;
-  String uid;
   final messageTextController = TextEditingController();
   String messageText;
+  String uid;
+  bool initstate = true;
 
   void getCurrentUser() async{
     try {
       var user = await FirebaseAuth.instance.currentUser();
       if (user != null) {
-        loggedInUser = user;
-        uid = loggedInUser.uid;
         setState(() {
-          
+          loggedInUser = user;
+          uid = loggedInUser.uid;
         });
       }
     } catch (e) {
@@ -36,14 +36,24 @@ class _SupportChatState extends State<SupportChat> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    if(loggedInUser == null){
+  void didChangeDependencies() {
+    if(loggedInUser == null && initstate){
       getCurrentUser();
-    }else{
-      loggedInUser = widget.loggedInUser;
-      uid = widget.uid;
     }
+    initstate = false;
+    super.didChangeDependencies();
+  }
+
+  getUser(){
+    if(widget.loggedInUser == null)
+      return loggedInUser;
+    return widget.loggedInUser;
+  }
+
+  getUid(){
+    if(widget.uid == null)
+      return uid;
+    return widget.uid;
   }
 
   @override
@@ -51,14 +61,14 @@ class _SupportChatState extends State<SupportChat> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Chat with DevManager'),
+          title: Text('Chat with ClientSupportManager'),
           automaticallyImplyLeading: false,
         ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            (loggedInUser == null)?Container():MessagesStream(loggedInUser, loggedInUser.uid),
+            (loggedInUser == null)?Container():MessagesStream(getUser(), getUid()),
             Container(
               decoration: kMessageContainerDecoration,
               child: Row(
@@ -78,7 +88,7 @@ class _SupportChatState extends State<SupportChat> {
                       messageTextController.clear();
                       fireStore
                           .collection('Development Admin')
-                          .document(uid)
+                          .document(getUid())
                           .collection('messages')
                           .add({
                         'text': messageText,

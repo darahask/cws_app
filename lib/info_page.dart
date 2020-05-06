@@ -1,14 +1,11 @@
+import 'package:cws_app/adminsprivate/admin_select.dart';
 import 'package:cws_app/employee_status.dart';
-import 'package:cws_app/info_screens/complete_info.dart';
 import 'package:cws_app/info_screens/dash_info.dart';
 import 'package:cws_app/info_screens/messags_info.dart';
 import 'package:cws_app/info_screens/register_screen.dart';
 import 'package:cws_app/info_screens/status_info.dart';
 import 'package:cws_app/supportclasses/supportchat.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
-FirebaseUser loggedInUser;
 
 class InfoMain extends StatefulWidget {
 
@@ -22,7 +19,7 @@ class InfoMain extends StatefulWidget {
 class _InfoMainState extends State<InfoMain> {
 
   int num = 0;
-  final widgets = [DashInfo(),StatusInfo(),MessagesInfo(),EmployeeStatus(),RegisterPage(),CompleteInfo(),];
+  final widgets = [DashInfo('overall'),StatusInfo(),MessagesInfo(),EmployeeStatus(),AdminChatSelect('overall'),RegisterPage(),];
   final items_b = [
     BottomNavigationBarItem(
       icon: Icon(
@@ -58,23 +55,23 @@ class _InfoMainState extends State<InfoMain> {
     ),
     BottomNavigationBarItem(
       icon: Icon(
+        Icons.person_outline,
+      ),
+      title: Text(
+        'Managers',
+      ),
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(
         Icons.account_circle,
       ),
       title: Text(
         'Register',
       ),
     ),
-    BottomNavigationBarItem(
-      icon: Icon(
-        Icons.assignment_turned_in,
-      ),
-      title: Text(
-        'Completed',
-      ),
-    ),
   ];
 
-  final widgets1 = [DashInfo(),StatusInfo(),SupportChat(),EmployeeStatus(),CompleteInfo(),];
+  final widgets1 = [DashInfo('development'),StatusInfo(),SupportChat(),EmployeeStatus(),AdminChatSelect('Development Admin'),];
   final items_b1 = [
     BottomNavigationBarItem(
       icon: Icon(
@@ -110,15 +107,15 @@ class _InfoMainState extends State<InfoMain> {
     ),
     BottomNavigationBarItem(
       icon: Icon(
-        Icons.assignment_turned_in,
+        Icons.person_outline,
       ),
       title: Text(
-        'Completed',
+        'Chat',
       ),
     ),
   ];
 
-  final widgets2 = [DashInfo(),StatusInfo(),MessagesInfo(),EmployeeStatus(),CompleteInfo(),];
+  final widgets2 = [DashInfo('design'),StatusInfo(),MessagesInfo(),EmployeeStatus(),AdminChatSelect('Design Admin')];
   final items_b2 = [
     BottomNavigationBarItem(
       icon: Icon(
@@ -154,35 +151,13 @@ class _InfoMainState extends State<InfoMain> {
     ),
     BottomNavigationBarItem(
       icon: Icon(
-        Icons.assignment_turned_in,
+        Icons.person_outline,
       ),
       title: Text(
-        'Completed',
+        'Chat',
       ),
     ),
   ];
-
-  void getCurrentUser() async{
-    try {
-      var user = await FirebaseAuth.instance.currentUser();
-      if (user != null) {
-        loggedInUser = user;
-      }
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  @override
-  void initState() {
-    getCurrentUser();
-    loadData();
-    super.initState();
-  }
-
-  loadData(){
-    
-  }
 
   getData(String type){
     if(type == 'overall'){

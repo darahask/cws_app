@@ -3,94 +3,98 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cws_app/dm_classes/constants.dart';
 import 'package:flutter/material.dart';
 
-String chatcode;
-
-final fireStore = Firestore.instance;
-FirebaseUser loggedInUser;
-
 class AdminsChat extends StatefulWidget {
-
-  final String chatcode;
-  AdminsChat(this.chatcode);
+  final String type;
+  AdminsChat(this.type);
 
   @override
   _AdminsChatState createState() => _AdminsChatState();
 }
 
 class _AdminsChatState extends State<AdminsChat> {
-
   final messageTextController = TextEditingController();
   final _auth = FirebaseAuth.instance;
   String messageText;
+  final fireStore = Firestore.instance;
+  FirebaseUser loggedInUser;
 
-  void getCurrentUser() async{
+  void getCurrentUser() async {
     try {
       var user = await _auth.currentUser();
       if (user != null) {
         loggedInUser = user;
-        setState(() {
-
-        });
+        setState(() {});
       }
-    }catch(e){
+    } catch (e) {
       print(e);
     }
   }
 
   @override
   void initState() {
-    chatcode = widget.chatcode;
     super.initState();
     getCurrentUser();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Chat with Admins'),),
+      appBar: AppBar(
+        title: Text('Chat with Prithvi Sir'),
+        automaticallyImplyLeading: false,
+      ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          (loggedInUser != null)?StreamBuilder<QuerySnapshot>(
-        stream: fireStore.collection(chatcode).orderBy('timestamp',descending: false).snapshots(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Center(
-                child: CircularProgressIndicator(
-                  backgroundColor: Color(0xff034198),
-                ),
-              ),
-            );
-          }
-          final messages = snapshot.data.documents.reversed;
-          List<MessageBubble> messageBubbles = [];
-          for (var message in messages) {
-            final messageText = message.data['text'];
-            final messageSender = message.data['sender'];
+          (loggedInUser != null)
+              ? StreamBuilder<QuerySnapshot>(
+                  stream: fireStore
+                      .collection(widget.type)
+                      .document(loggedInUser.uid)
+                      .collection('messagesprivate')
+                      .orderBy('timestamp', descending: false)
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            backgroundColor: Color(0xff034198),
+                          ),
+                        ),
+                      );
+                    }
+                    final messages = snapshot.data.documents.reversed;
+                    List<MessageBubble> messageBubbles = [];
+                    for (var message in messages) {
+                      final messageText = message.data['text'];
+                      final messageSender = message.data['sender'];
 
-            final currentUser = loggedInUser == null? 'Anonymous':loggedInUser.email;
+                      final currentUser = loggedInUser == null
+                          ? 'Anonymous'
+                          : loggedInUser.email;
 
-            final messageBubble = MessageBubble(
-              sender: messageSender,
-              text: messageText,
-              isMe: currentUser == messageSender,
-            );
+                      final messageBubble = MessageBubble(
+                        sender: messageSender,
+                        text: messageText,
+                        isMe: currentUser == messageSender,
+                      );
 
-            messageBubbles.add(messageBubble);
-          }
-          return Expanded(
-            child: ListView(
-              reverse: true,
-              padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
-              children: messageBubbles,
-            ),
-          );
-        },
-      ):Container(),
+                      messageBubbles.add(messageBubble);
+                    }
+                    return Expanded(
+                      child: ListView(
+                        reverse: true,
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 10.0, vertical: 20.0),
+                        children: messageBubbles,
+                      ),
+                    );
+                  },
+                )
+              : Container(),
           Container(
             decoration: kMessageContainerDecoration,
             child: Row(
@@ -108,10 +112,17 @@ class _AdminsChatState extends State<AdminsChat> {
                 FlatButton(
                   onPressed: () {
                     messageTextController.clear();
-                    fireStore.collection(widget.chatcode).add({
+                    fireStore
+                        .collection(widget.type)
+                        .document(loggedInUser.uid)
+                        .collection('messagesprivate')
+                        .add({
                       'text': messageText,
-                      'sender': loggedInUser == null? 'Anonymous':loggedInUser.email,
-                      'timestamp': DateTime.now().millisecondsSinceEpoch.toString(),
+                      'sender': loggedInUser == null
+                          ? 'Anonymous'
+                          : loggedInUser.email,
+                      'timestamp':
+                          DateTime.now().millisecondsSinceEpoch.toString(),
                     });
                   },
                   child: Text(
@@ -141,7 +152,7 @@ class MessageBubble extends StatelessWidget {
       padding: EdgeInsets.all(10.0),
       child: Column(
         crossAxisAlignment:
-        isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+            isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: <Widget>[
           Text(
             sender,
@@ -153,16 +164,16 @@ class MessageBubble extends StatelessWidget {
           Material(
             borderRadius: isMe
                 ? BorderRadius.only(
-                topLeft: Radius.circular(30.0),
-                bottomLeft: Radius.circular(30.0),
-                bottomRight: Radius.circular(30.0))
+                    topLeft: Radius.circular(30.0),
+                    bottomLeft: Radius.circular(30.0),
+                    bottomRight: Radius.circular(30.0))
                 : BorderRadius.only(
-              bottomLeft: Radius.circular(30.0),
-              bottomRight: Radius.circular(30.0),
-              topRight: Radius.circular(30.0),
-            ),
+                    bottomLeft: Radius.circular(30.0),
+                    bottomRight: Radius.circular(30.0),
+                    topRight: Radius.circular(30.0),
+                  ),
             elevation: 5.0,
-            color: isMe ? Color(0xff034198):Color(0xff09a5e0),
+            color: isMe ? Color(0xff034198) : Color(0xff09a5e0),
             child: Padding(
               padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
               child: Text(

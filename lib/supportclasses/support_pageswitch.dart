@@ -1,3 +1,4 @@
+import 'package:cws_app/adminsprivate/adminschat.dart';
 import 'package:cws_app/supportclasses/support_client.dart';
 import 'package:cws_app/supportclasses/support_devmanager.dart';
 import 'package:flutter/material.dart';
@@ -13,39 +14,11 @@ class SupportSwitch extends StatefulWidget {
 class _SupportSwitchState extends State<SupportSwitch> {
   int num = 0;
 
-  // final widgets1 = [
-  //   EmployeeDashboard('Sales Employee'),
-  //   EmployeeChat('Sales Employee'),
-  //   SalesRegister()
-  // ];
-  // final items_b1 = [
-  //   BottomNavigationBarItem(
-  //     icon: Icon(
-  //       Icons.dashboard,
-  //     ),
-  //     title: Text(
-  //       'Dashboard',
-  //     ),
-  //   ),
-  //   BottomNavigationBarItem(
-  //     icon: Icon(
-  //       Icons.message,
-  //     ),
-  //     title: Text('Chat'),
-  //   ),
-  //   BottomNavigationBarItem(
-  //     icon: Icon(
-  //       Icons.account_circle,
-  //     ),
-  //     title: Text('Register'),
-  //   ),
-  // ];
-
   List<Widget> widgets = [];
   List<BottomNavigationBarItem> items_b = [];
 
   loadData(String type) {
-    widgets = [SupportClient(), SupportDev()];
+    widgets = [SupportClient(), SupportDev(),AdminsChat('Client Support')];
     items_b = [
       BottomNavigationBarItem(
         icon: Icon(
@@ -60,7 +33,13 @@ class _SupportSwitchState extends State<SupportSwitch> {
           Icons.people,
         ),
         title: Text('Dev Managers'),
-      )
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(
+          Icons.people,
+        ),
+        title: Text('Chat'),
+      ),
     ];
     setState(() {
       
