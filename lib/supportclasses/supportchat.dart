@@ -58,57 +58,55 @@ class _SupportChatState extends State<SupportChat> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('Chat with ClientSupportManager'),
-          automaticallyImplyLeading: false,
-        ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            (loggedInUser == null)?Container():MessagesStream(getUser(), getUid()),
-            Container(
-              decoration: kMessageContainerDecoration,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Expanded(
-                    child: TextField(
-                      controller: messageTextController,
-                      onChanged: (value) { 
-                        messageText = value;
-                      },
-                      decoration: kMessageTextFieldDecoration,
-                    ),
-                  ),
-                  FlatButton(
-                    onPressed: () {
-                      messageTextController.clear();
-                      fireStore
-                          .collection('Development Admin')
-                          .document(getUid())
-                          .collection('messages')
-                          .add({
-                        'text': messageText,
-                        'sender': loggedInUser == null
-                            ? 'Anonymous'
-                            : loggedInUser.email,
-                        'timestamp':
-                            DateTime.now().millisecondsSinceEpoch.toString(),
-                      });
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Chat with ClientSupportManager'),
+        automaticallyImplyLeading: false,
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          (loggedInUser == null)?Container():MessagesStream(getUser(), getUid()),
+          Container(
+            decoration: kMessageContainerDecoration,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Expanded(
+                  child: TextField(
+                    controller: messageTextController,
+                    onChanged: (value) { 
+                      messageText = value;
                     },
-                    child: Text(
-                      'Send',
-                      style: kSendButtonTextStyle,
-                    ),
+                    decoration: kMessageTextFieldDecoration,
                   ),
-                ],
-              ),
+                ),
+                FlatButton(
+                  onPressed: () {
+                    messageTextController.clear();
+                    fireStore
+                        .collection('Development Admin')
+                        .document(getUid())
+                        .collection('messages')
+                        .add({
+                      'text': messageText,
+                      'sender': loggedInUser == null
+                          ? 'Anonymous'
+                          : loggedInUser.email,
+                      'timestamp':
+                          DateTime.now().millisecondsSinceEpoch.toString(),
+                    });
+                  },
+                  child: Text(
+                    'Send',
+                    style: kSendButtonTextStyle,
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

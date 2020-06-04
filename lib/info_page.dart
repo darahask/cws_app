@@ -4,6 +4,7 @@ import 'package:cws_app/info_screens/dash_info.dart';
 import 'package:cws_app/info_screens/messags_info.dart';
 import 'package:cws_app/info_screens/register_screen.dart';
 import 'package:cws_app/info_screens/status_info.dart';
+import 'package:cws_app/info_screens_2/chatroomdev.dart';
 import 'package:cws_app/supportclasses/supportchat.dart';
 import 'package:flutter/material.dart';
 
@@ -71,7 +72,7 @@ class _InfoMainState extends State<InfoMain> {
     ),
   ];
 
-  final widgets1 = [DashInfo('development'),StatusInfo(),SupportChat(),EmployeeStatus(),AdminChatSelect('Development Admin'),];
+  final widgets1 = [DashInfo('development'),StatusInfo(),DevChatRoom()];
   final items_b1 = [
     BottomNavigationBarItem(
       icon: Icon(
@@ -95,22 +96,6 @@ class _InfoMainState extends State<InfoMain> {
       ),
       title: Text(
         'Messages',
-      ),
-    ),
-    BottomNavigationBarItem(
-      icon: Icon(
-        Icons.people,
-      ),
-      title: Text(
-        'Employees',
-      ),
-    ),
-    BottomNavigationBarItem(
-      icon: Icon(
-        Icons.person_outline,
-      ),
-      title: Text(
-        'Chat',
       ),
     ),
   ];
@@ -159,7 +144,7 @@ class _InfoMainState extends State<InfoMain> {
     ),
   ];
 
-  getData(String type){
+  getData(String type) {
     if(type == 'overall'){
       return widgets;
     }else if(type == 'development'){
@@ -169,7 +154,7 @@ class _InfoMainState extends State<InfoMain> {
     }
   }
 
-  getItems(String type){
+  getItems(String type) {
     if(type == 'overall'){
       return items_b;
     }else if(type == 'development'){

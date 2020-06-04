@@ -32,7 +32,7 @@ class _ELoginPageState extends State<ELoginPage> {
                   image: AssetImage('images/darklogo.png'),
                 ),
                 Text(
-                  'Welcome',
+                  'Welcome to our Family',
                   style: TextStyle(
                       fontSize: 25,
                       fontWeight: FontWeight.bold,

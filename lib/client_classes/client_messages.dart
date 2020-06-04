@@ -77,7 +77,7 @@ class _ChatScreenState extends State<Chat> {
             IconButton(
               icon: Icon(Icons.phone),
               onPressed: () async{
-                const url = 'tel:+917080855524';
+                const url = 'tel:+919336337267';
                 if (await canLaunch(url)) {
                   await launch(url);
                 } else {

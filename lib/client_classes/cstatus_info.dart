@@ -76,6 +76,7 @@ class _ClientStatusState extends State<ClientStatus> {
       child: Scaffold(
         body: SingleChildScrollView(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               SizedBox(
                 height: 10,
@@ -95,13 +96,14 @@ class _ClientStatusState extends State<ClientStatus> {
               ),
               Center(
                 child: Text(
-                  'Id: '+ ((loggedInUser != null)?loggedInUser.uid:'loading'),
+                  'Id: ' +
+                      ((loggedInUser != null) ? loggedInUser.uid : 'loading'),
                   style: TextStyle(fontFamily: 'OpenSans'),
                 ),
               ),
               Center(
                 child: Text(
-                  'Mobile: '+mobile,
+                  'Mobile: ' + mobile,
                   style: TextStyle(fontFamily: 'OpenSans'),
                 ),
               ),
@@ -115,95 +117,159 @@ class _ClientStatusState extends State<ClientStatus> {
               SizedBox(
                 height: 20,
               ),
-              Container(
-                height: 200,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: GestureDetector(
-                          onTap: () async {
-                            const url = 'tel:+917080855524';
-                            if (await canLaunch(url)) {
-                              await launch(url);
-                            } else {
-                              throw 'Could not launch $url';
-                            }
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              boxShadow: kElevationToShadow[2],
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Column(
-                              children: <Widget>[
-                                Expanded(
-                                    flex: 2,
-                                    child: Icon(
-                                      Icons.phone,
-                                      size: 60,
-                                    )),
-                                Expanded(
-                                  child: Text(
-                                    'Call',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 18),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
+              Wrap(
+                alignment: WrapAlignment.spaceAround,
+                runSpacing: 8,
+                direction: Axis.horizontal,
+                children: <Widget>[
+                  InkWell(
+                    onTap: () async {
+                      const url = 'tel:+917080855524';
+                      if (await canLaunch(url)) {
+                        await launch(url);
+                      } else {
+                        throw 'Could not launch $url';
+                      }
+                    },
+                    child: Chip(
+                      label: Text('Sales'),
+                      avatar: CircleAvatar(
+                        child: Icon(Icons.call),
+                        minRadius: 50,
                       ),
+                      labelPadding: EdgeInsets.all(8),
+                      backgroundColor: Colors.white,
+                      elevation: 3,
+                      labelStyle: TextStyle(
+                          fontFamily: 'OpenSans',
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold),
                     ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: GestureDetector(
-                          onTap: () async {
-                            const url = 'sms:+917080855524';
-                            if (await canLaunch(url)) {
-                              await launch(url);
-                            } else {
-                              throw 'Could not launch $url';
-                            }
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                boxShadow: kElevationToShadow[2],
-                                borderRadius: BorderRadius.circular(10)),
-                            child: Column(
-                              children: <Widget>[
-                                Expanded(
-                                    flex: 2,
-                                    child: Icon(
-                                      Icons.message,
-                                      size: 60,
-                                    )),
-                                Expanded(
-                                  child: Text(
-                                    'Message',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 18),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
+                  ),
+                  InkWell(
+                    onTap: () async {
+                      const url = 'tel:+919336337267';
+                      if (await canLaunch(url)) {
+                        await launch(url);
+                      } else {
+                        throw 'Could not launch $url';
+                      }
+                    },
+                    child: Chip(
+                      label: Text('Support'),
+                      avatar: CircleAvatar(
+                        child: Icon(Icons.call),
+                        minRadius: 50,
                       ),
-                    )
-                  ],
-                ),
+                      labelPadding: EdgeInsets.all(8),
+                      backgroundColor: Colors.white,
+                      elevation: 3,
+                      labelStyle: TextStyle(
+                          fontFamily: 'OpenSans',
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () async {
+                      const url = "whatsapp://send?phone=+917080855524";
+                      if (await canLaunch(url)) {
+                        await launch(url);
+                      } else {
+                        throw 'Could not launch $url';
+                      }
+                    },
+                    child: Chip(
+                      label: Text('Sales'),
+                      avatar: CircleAvatar(
+                        child: Icon(Icons.message),
+                        minRadius: 50,
+                      ),
+                      labelPadding: EdgeInsets.all(8),
+                      backgroundColor: Colors.white,
+                      elevation: 3,
+                      labelStyle: TextStyle(
+                          fontFamily: 'OpenSans',
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () async {
+                      const url = "whatsapp://send?phone=+919336337267";
+                      if (await canLaunch(url)) {
+                        await launch(url);
+                      } else {
+                        throw 'Could not launch $url';
+                      }
+                    },
+                    child: Chip(
+                      label: Text('Support'),
+                      avatar: CircleAvatar(
+                        child: Icon(Icons.message),
+                        minRadius: 50,
+                      ),
+                      labelPadding: EdgeInsets.all(8),
+                      backgroundColor: Colors.white,
+                      elevation: 3,
+                      labelStyle: TextStyle(
+                          fontFamily: 'OpenSans',
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () async {
+                      const url = 'mailto:sales@cwservices.co.in';
+                      if (await canLaunch(url)) {
+                        await launch(url);
+                      } else {
+                        throw 'Could not launch $url';
+                      }
+                    },
+                    child: Chip(
+                      label: Text('Sales'),
+                      avatar: CircleAvatar(
+                        child: Icon(Icons.mail),
+                        minRadius: 50,
+                      ),
+                      labelPadding: EdgeInsets.all(8),
+                      backgroundColor: Colors.white,
+                      elevation: 3,
+                      labelStyle: TextStyle(
+                          fontFamily: 'OpenSans',
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () async {
+                      const url = 'mailto:support@cwservices.co.in';
+                      if (await canLaunch(url)) {
+                        await launch(url);
+                      } else {
+                        throw 'Could not launch $url';
+                      }
+                    },
+                    child: Chip(
+                      label: Text('Support'),
+                      avatar: CircleAvatar(
+                        child: Icon(Icons.mail),
+                        minRadius: 50,
+                      ),
+                      labelPadding: EdgeInsets.all(8),
+                      backgroundColor: Colors.white,
+                      elevation: 3,
+                      labelStyle: TextStyle(
+                          fontFamily: 'OpenSans',
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ],
               ),
               SizedBox(
-                height: 8,
+                height: 20,
               ),
               Container(
                 decoration: BoxDecoration(

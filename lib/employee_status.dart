@@ -7,6 +7,8 @@ final fireStore = Firestore.instance;
 FirebaseUser loggedInUser;
 
 class EmployeeStatus extends StatefulWidget {
+  final String type;
+  EmployeeStatus({this.type});
   @override
   _EmployeeStatusState createState() => _EmployeeStatusState();
 }
@@ -32,8 +34,29 @@ class _EmployeeStatusState extends State<EmployeeStatus> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget screen(String type) {
+    if (type == "Development Admin")
+      return Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          title: Text(
+            'Employee Tracking',
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+        body: MessagesStream('Development Employee'),
+      );
+    if (type == "Design Admin")
+      return Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          title: Text(
+            'Employee Tracking',
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+        body: MessagesStream('Design Employee'),
+      );
     return DefaultTabController(
       length: 3,
       child: Scaffold(
@@ -84,6 +107,11 @@ class _EmployeeStatusState extends State<EmployeeStatus> {
         ),
       ),
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return screen(widget.type);
   }
 }
 
@@ -154,7 +182,7 @@ class MessageBubble extends StatelessWidget {
             leading: Image(
               image: AssetImage('images/darklogo.png'),
             ),
-            title: Text(name==null?'...':name),
+            title: Text(name == null ? '...' : name),
             subtitle: FittedBox(
               child: Text(uid),
             ),

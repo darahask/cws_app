@@ -33,7 +33,7 @@ class _LoginPageState extends State<LoginPage> {
                   image: AssetImage('images/darklogo.png'),
                 ),
                 Text(
-                  'Welcome',
+                  'Welcome to our Family',
                   style: TextStyle(
                       fontSize: 25,
                       fontWeight: FontWeight.bold,
