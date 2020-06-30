@@ -8,7 +8,8 @@ final fireStore = Firestore.instance;
 class SupportChat extends StatefulWidget {
   final String uid;
   final FirebaseUser loggedInUser;
-  SupportChat({this.uid, this.loggedInUser});
+  final String type;
+  SupportChat({this.uid, this.loggedInUser, @required this.type});
 
   @override
   _SupportChatState createState() => _SupportChatState();
@@ -67,7 +68,7 @@ class _SupportChatState extends State<SupportChat> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          (loggedInUser == null)?Container():MessagesStream(getUser(), getUid()),
+          (loggedInUser == null)?Container():MessagesStream(getUser(), getUid(), widget.type),
           Container(
             decoration: kMessageContainerDecoration,
             child: Row(
@@ -86,7 +87,7 @@ class _SupportChatState extends State<SupportChat> {
                   onPressed: () {
                     messageTextController.clear();
                     fireStore
-                        .collection('Development Admin')
+                        .collection(widget.type)
                         .document(getUid())
                         .collection('messages')
                         .add({
@@ -115,13 +116,14 @@ class _SupportChatState extends State<SupportChat> {
 class MessagesStream extends StatelessWidget {
   final loggedInUser;
   final uid;
-  MessagesStream(this.loggedInUser, this.uid);
+  final type;
+  MessagesStream(this.loggedInUser, this.uid, this.type);
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
       stream: fireStore
-          .collection('Development Admin')
+          .collection(type)
           .document(uid)
           .collection('messages')
           .orderBy('timestamp', descending: false)

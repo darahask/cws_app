@@ -1,14 +1,56 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cws_app/client_classes/cLogin_page.dart';
+import 'package:cws_app/client_classes/client_info.dart';
 import 'package:cws_app/employee_classes/elogin_page.dart';
 import 'package:cws_app/login_page.dart';
 import 'package:cws_app/supportclasses/support_login.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class MainPage extends StatelessWidget {
+class MainPage extends StatefulWidget {
+  @override
+  _MainPageState createState() => _MainPageState();
+}
+
+class _MainPageState extends State<MainPage> {
+  final _auth = FirebaseAuth.instance;
+  final _fireStore = Firestore.instance;
+  bool loading = true;
+
+  void autoLogin()async{
+    var user = await _auth.currentUser();
+    if(user != null){
+       if((await _fireStore.collection('Client').document(user.uid).get()).exists){
+         setState(() {loading=false;});
+         Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => ClientLogin(signedIn:true)));
+       }else if((await _fireStore.collection('Design Admin').document(user.uid).get()).exists||
+       (await _fireStore.collection('Development Admin').document(user.uid).get()).exists ||
+       (await _fireStore.collection('Over all Admin').document(user.uid).get()).exists){
+         setState(() {loading=false;});
+         Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => LoginPage(signedIn: true,)));
+       }else if((await _fireStore.collection('Design Employee').document(user.uid).get()).exists||
+       (await _fireStore.collection('Development Employee').document(user.uid).get()).exists ||
+       (await _fireStore.collection('Sales Employee').document(user.uid).get()).exists){
+         setState(() {loading=false;});
+         Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => ELoginPage(signedIn: true,)));
+       }else{
+         setState(() {loading=false;});
+         Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => SupportLogin(signedIn: true,)));
+       }
+    }
+    setState(() {loading=false;});
+  }
+
+  @override
+  void initState() {
+    autoLogin();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
+      body: (loading)?Center(child: CircularProgressIndicator()):Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,

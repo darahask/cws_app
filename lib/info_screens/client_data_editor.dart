@@ -4,6 +4,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 final fireStore = Firestore.instance;
@@ -22,10 +23,11 @@ class _DataEditorState extends State<DataEditor> {
       devstatus = 'Select Item',
       mobile = 'null';
   int payper = 0, proper = 0;
+  final formatter = new DateFormat('dd-MM-yyyy');
 
   final _storage = FirebaseStorage.instance;
   File _image;
-  String uri;
+  String uri, startDate, endDate;
 
   void loadData() async {
     var snap = await Firestore.instance
@@ -37,13 +39,23 @@ class _DataEditorState extends State<DataEditor> {
         overalldevstatus = (snap.data['overalldevstatus'] == null)
             ? 'Select Item'
             : snap.data['overalldevstatus'];
-        uistatus =
-            (snap.data['uistatus'] == null) ? 'Select Item' : snap.data['uistatus'];
-        devstatus =
-            (snap.data['devstatus'] == null) ? 'Select Item' : snap.data['devstatus'];
+        uistatus = (snap.data['uistatus'] == null)
+            ? 'Select Item'
+            : snap.data['uistatus'];
+        devstatus = (snap.data['devstatus'] == null)
+            ? 'Select Item'
+            : snap.data['devstatus'];
         payper = (snap.data['payper'] == null) ? 'null' : snap.data['payper'];
         proper = (snap.data['proper'] == null) ? 'null' : snap.data['proper'];
         mobile = (snap.data['mobile'] == null) ? 'null' : snap.data['mobile'];
+        startDate = (snap.data['sd'] == null)
+            ? '00-00-0000'
+            : formatter
+                .format(DateTime.fromMillisecondsSinceEpoch(snap.data['sd']));
+        endDate = (snap.data['ed'] == null)
+            ? '00-00-0000'
+            : formatter
+                .format(DateTime.fromMillisecondsSinceEpoch(snap.data['ed']));
       }
     });
   }
@@ -110,6 +122,14 @@ class _DataEditorState extends State<DataEditor> {
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
+            SizedBox(height: 10,),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                Text('Start Date: $startDate', style: TextStyle(fontFamily: "Open Sans", fontSize: 16),),
+                Text('End Date: $endDate', style: TextStyle(fontFamily: "Open Sans", fontSize: 16),),
+              ],
+            ),
             ListTile(
               title: TextField(
                 controller: TextEditingController(text: payper.toString()),
@@ -131,15 +151,15 @@ class _DataEditorState extends State<DataEditor> {
               ),
             ),
             ListTile(
-              title: DButton(changeods,overalldevstatus),
+              title: DButton(changeods, overalldevstatus),
               subtitle: Text('Overall development status'),
             ),
             ListTile(
-              title: DButton(changeuip,uistatus),
+              title: DButton(changeuip, uistatus),
               subtitle: Text('UI status'),
             ),
             ListTile(
-              title: DButton(changedevp,devstatus),
+              title: DButton(changedevp, devstatus),
               subtitle: Text('Development status'),
             ),
             SizedBox(
@@ -212,7 +232,8 @@ class _DataEditorState extends State<DataEditor> {
                     'uistatus': 'done',
                     'overalldevstatus': 'done',
                     'payper': 100,
-                    'proper': 100
+                    'proper': 100,
+                    'ed':DateTime.now().millisecondsSinceEpoch,
                   },
                 );
                 fireStore
@@ -237,7 +258,7 @@ class _DataEditorState extends State<DataEditor> {
 class DButton extends StatefulWidget {
   final func;
   final String value;
-  DButton(this.func,this.value);
+  DButton(this.func, this.value);
   @override
   _DButtonState createState() => _DButtonState();
 }
@@ -245,7 +266,7 @@ class DButton extends StatefulWidget {
 class _DButtonState extends State<DButton> {
   String value;
 
-  setValue(x){
+  setValue(x) {
     setState(() {
       value = x;
     });

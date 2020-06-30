@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cws_app/main_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class DashInfo extends StatefulWidget {
@@ -19,9 +21,7 @@ class _DashInfoState extends State<DashInfo> {
         list.insert(0, doc);
       }
     }
-    setState(() {
-      
-    });
+    setState(() {});
 
     var d =
         await Firestore.instance.collection('Design Employee').getDocuments();
@@ -30,7 +30,7 @@ class _DashInfoState extends State<DashInfo> {
         .getDocuments();
     var s =
         await Firestore.instance.collection('Sales Employee').getDocuments();
-    
+
     for (var doc in d.documents) {
       if ((DateTime.now().microsecondsSinceEpoch -
               int.parse(doc.data['presentworkstatus'])) <=
@@ -38,7 +38,7 @@ class _DashInfoState extends State<DashInfo> {
         number++;
       }
     }
-    
+
     for (var doc in dev.documents) {
       if ((DateTime.now().microsecondsSinceEpoch -
               int.parse(doc.data['presentworkstatus'])) <=
@@ -46,17 +46,15 @@ class _DashInfoState extends State<DashInfo> {
         number++;
       }
     }
-    
+
     for (var doc in s.documents) {
       if ((DateTime.now().microsecondsSinceEpoch -
-              int.parse(doc.data['presentworkstatus'])) <=
+              int.parse(doc.data['presentworkstatus']?doc.data['presentworkstatus']:0)) <=
           86400000) {
         number++;
       }
     }
-    setState(() {
-      
-    });
+    setState(() {});
   }
 
   @override
@@ -73,21 +71,37 @@ class _DashInfoState extends State<DashInfo> {
         SizedBox(
           height: 10,
         ),
-        Text(
-          'DASHBOARD',
-          style: TextStyle(
-            fontFamily: 'OpenSans',
-            fontSize: 32,
-            color: Color(0xff034198),
-            fontWeight: FontWeight.w900,
-            shadows: kElevationToShadow[2],
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            Text(
+              'DASHBOARD',
+              style: TextStyle(
+                fontFamily: 'OpenSans',
+                fontSize: 32,
+                color: Color(0xff034198),
+                fontWeight: FontWeight.w900,
+                shadows: kElevationToShadow[2],
+              ),
+            ),
+            InkWell(
+              onTap: (){
+                FirebaseAuth.instance.signOut();
+                Navigator.of(context).pop();
+                print('Signed OUt');
+              },
+              child: Chip(
+                label: Text('Logout'),
+                backgroundColor: Colors.white,
+              ),
+            ),
+          ],
         ),
         SizedBox(
           height: 20,
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal:10.0),
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
           child: Container(
             height: 45,
             decoration: BoxDecoration(

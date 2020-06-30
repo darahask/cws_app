@@ -12,7 +12,7 @@ class SupportClient extends StatefulWidget {
 }
 
 class _SupportClientState extends State<SupportClient> {
-    final _auth = FirebaseAuth.instance;
+  final _auth = FirebaseAuth.instance;
   String messageText;
 
   @override
@@ -43,6 +43,15 @@ class _SupportClientState extends State<SupportClient> {
             style:
                 TextStyle(fontFamily: 'OpenSans', fontWeight: FontWeight.bold),
           ),
+          actions: <Widget>[
+           FlatButton(
+             child: Text('Logout',style: TextStyle(color: Colors.white,fontSize: 16),),
+             onPressed: (){
+               FirebaseAuth.instance.signOut();
+               Navigator.pop(context);
+             },
+           )
+          ],
         ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

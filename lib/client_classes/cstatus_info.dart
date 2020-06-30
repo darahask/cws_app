@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../main_page.dart';
+
 final fireStore = Firestore.instance;
 FirebaseUser loggedInUser;
 
@@ -83,15 +85,31 @@ class _ClientStatusState extends State<ClientStatus> {
               ),
               Padding(
                 padding: const EdgeInsets.all(18.0),
-                child: Center(
-                  child: Text(
-                    name,
-                    style: TextStyle(
-                        fontWeight: FontWeight.w900,
-                        fontSize: 28,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Text(
+                      name,
+                      style: TextStyle(
+                        fontFamily: 'OpenSans',
+                        fontSize: 32,
                         color: Color(0xff034198),
-                        fontFamily: 'OpenSans'),
-                  ),
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        FirebaseAuth.instance.signOut();
+                        Navigator.of(context).pop();
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (ctx) => MainPage()));
+                      },
+                      child: Chip(
+                        label: Text('Logout'),
+                        backgroundColor: Colors.white,
+                      ),
+                    ),
+                  ],
                 ),
               ),
               Center(

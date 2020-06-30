@@ -4,6 +4,7 @@ import 'package:cws_app/info_screens/dash_info.dart';
 import 'package:cws_app/info_screens/messags_info.dart';
 import 'package:cws_app/info_screens/register_screen.dart';
 import 'package:cws_app/info_screens/status_info.dart';
+import 'package:cws_app/info_screens_2/chatroomdes.dart';
 import 'package:cws_app/info_screens_2/chatroomdev.dart';
 import 'package:cws_app/supportclasses/supportchat.dart';
 import 'package:flutter/material.dart';
@@ -100,7 +101,7 @@ class _InfoMainState extends State<InfoMain> {
     ),
   ];
 
-  final widgets2 = [DashInfo('design'),StatusInfo(),MessagesInfo(),EmployeeStatus(),AdminChatSelect('Design Admin')];
+  final widgets2 = [DashInfo('design'),StatusInfo(),MessagesInfo(),DesChatRoom()];
   final items_b2 = [
     BottomNavigationBarItem(
       icon: Icon(
@@ -129,14 +130,6 @@ class _InfoMainState extends State<InfoMain> {
     BottomNavigationBarItem(
       icon: Icon(
         Icons.people,
-      ),
-      title: Text(
-        'Employees',
-      ),
-    ),
-    BottomNavigationBarItem(
-      icon: Icon(
-        Icons.person_outline,
       ),
       title: Text(
         'Chat',

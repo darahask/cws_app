@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cws_app/main_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +16,11 @@ class EmployeeDashboard extends StatefulWidget {
 }
 
 class _EmployeeDashboardState extends State<EmployeeDashboard> {
-  String pw = 'Loading', fw = "Loading", sal = '0.0', name = 'Loading',salaryPkg = 'Loading';
+  String pw = 'Loading',
+      fw = "Loading",
+      sal = '0.0',
+      name = 'Loading',
+      salaryPkg = 'Loading';
   int attendance = 0;
   final _auth = FirebaseAuth.instance;
 
@@ -44,8 +49,11 @@ class _EmployeeDashboardState extends State<EmployeeDashboard> {
                 : snap.data['futurework'];
             sal = (snap.data['salary'] == null) ? '0.0' : snap.data['salary'];
             name = (snap.data['name'] == null) ? 'null' : snap.data['name'];
-            salaryPkg = (snap.data['salarypackage'] == null) ? 'null' : snap.data['salarypackage'];
-            attendance = (snap.data['attendance'] == null) ? 0 : snap.data['attendance'];
+            salaryPkg = (snap.data['salarypackage'] == null)
+                ? 'null'
+                : snap.data['salarypackage'];
+            attendance =
+                (snap.data['attendance'] == null) ? 0 : snap.data['attendance'];
           }
         });
       }
@@ -62,15 +70,31 @@ class _EmployeeDashboardState extends State<EmployeeDashboard> {
           Center(
             child: Padding(
               padding: const EdgeInsets.all(32.0),
-              child: Text(
-                "DASHBOARD",
-                style: TextStyle(
-                  color: Color(0xff034198),
-                  fontWeight: FontWeight.bold,
-                  fontSize: 32,
-                  letterSpacing: .7,
-                  shadows: kElevationToShadow[4],
-                ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Text(
+                    'DASHBOARD',
+                    style: TextStyle(
+                      fontFamily: 'OpenSans',
+                      fontSize: 32,
+                      color: Color(0xff034198),
+                      fontWeight: FontWeight.w900,
+                      shadows: kElevationToShadow[2],
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      FirebaseAuth.instance.signOut();
+                      Navigator.of(context).pop();
+                      Navigator.push(context, MaterialPageRoute(builder: (ctx)=>MainPage()));
+                    },
+                    child: Chip(
+                      label: Text('Logout'),
+                      backgroundColor: Colors.white,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),

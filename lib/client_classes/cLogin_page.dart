@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 class ClientLogin extends StatefulWidget {
+  final bool signedIn;
+  ClientLogin({this.signedIn});
   @override
   _ClientLoginState createState() => _ClientLoginState();
 }
@@ -16,12 +18,28 @@ class _ClientLoginState extends State<ClientLogin> {
   String email, password;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
+  bool loading2 = true;
+  void autoLogin(){
+      Navigator.pushReplacement(
+                context, MaterialPageRoute(builder: (context) => ClientInfo()));
+  }
+  @override
+  void initState() {
+    if(widget.signedIn == true){
+      loading2 = false;
+      autoLogin();
+    }else{
+      loading2 = false;
+    }
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: ModalProgressHUD(
         inAsyncCall: loading,
-        child: Scaffold(
+        child: (loading2)?Center(child:CircularProgressIndicator()):Scaffold(
           key: _scaffoldKey,
           body: SingleChildScrollView(
             child: Column(
@@ -72,8 +90,34 @@ class _ClientLoginState extends State<ClientLogin> {
                     ),
                   ),
                 ),
+                SizedBox(
+                  height: 6,
+                ),
+                InkWell(
+                  onTap: () {
+                    if (email == null) {
+                      _scaffoldKey.currentState.showSnackBar(
+                        SnackBar(
+                          content: Text('Please enter email'),
+                        ),
+                      );
+                    } else if (email.isEmpty) {
+                      _scaffoldKey.currentState.showSnackBar(
+                        SnackBar(
+                          content: Text('Please enter email'),
+                        ),
+                      );
+                    } else
+                      _auth.sendPasswordResetEmail(email: email);
+                  },
+                  child: Text(
+                    'Forgot Password?',
+                    style: TextStyle(color: Colors.blue),
+                  ),
+                ),
                 Padding(
-                  padding: const EdgeInsets.all(35),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 35, vertical: 20),
                   child: GestureDetector(
                     onTap: () async {
                       try {
@@ -88,9 +132,7 @@ class _ClientLoginState extends State<ClientLogin> {
                               .collection('Client')
                               .getDocuments();
                           for (var doc in data.documents) {
-                            print(doc.documentID);
                             if (doc.documentID == user.uid) {
-                              print(doc.documentID);
                               setState(() {
                                 loading = false;
                               });

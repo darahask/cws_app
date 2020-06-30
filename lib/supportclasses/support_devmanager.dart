@@ -7,6 +7,8 @@ final fireStore = Firestore.instance;
 FirebaseUser loggedInUser;
 
 class SupportDev extends StatefulWidget {
+  final String type;
+  SupportDev(this.type);
   @override
   _SupportDevState createState() => _SupportDevState();
 }
@@ -39,7 +41,7 @@ class _SupportDevState extends State<SupportDev> {
         appBar: AppBar(
           leading: Icon(Icons.people),
           title: Text(
-            'Clients',
+            widget.type + "'s",
             style:
                 TextStyle(fontFamily: 'OpenSans', fontWeight: FontWeight.bold),
           ),
@@ -51,7 +53,7 @@ class _SupportDevState extends State<SupportDev> {
             SizedBox(
               height: 8,
             ),
-            MessagesStream(),
+            MessagesStream(widget.type),
           ],
         ),
       ),
@@ -60,10 +62,12 @@ class _SupportDevState extends State<SupportDev> {
 }
 
 class MessagesStream extends StatelessWidget {
+  final String type;
+  MessagesStream(this.type);
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: fireStore.collection('Development Admin').snapshots(),
+      stream: fireStore.collection(type).snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return Padding(
@@ -81,7 +85,7 @@ class MessagesStream extends StatelessWidget {
           final cliname = message.data['name'];
           final cliuid = message.documentID;
 
-          final messageBubble = MessageBubble(name: cliname, uid: cliuid);
+          final messageBubble = MessageBubble(name: cliname, uid: cliuid, type: type,);
 
           messageBubbles.add(messageBubble);
         }
@@ -96,8 +100,8 @@ class MessagesStream extends StatelessWidget {
 }
 
 class MessageBubble extends StatelessWidget {
-  final String name, uid;
-  MessageBubble({this.name, this.uid});
+  final String name, uid, type;
+  MessageBubble({this.name, this.uid, this.type});
 
   @override
   Widget build(BuildContext context) {
@@ -109,7 +113,7 @@ class MessageBubble extends StatelessWidget {
               context,
               MaterialPageRoute(
                   builder: (context) =>
-                      SupportChat(uid: uid, loggedInUser: loggedInUser)));
+                      SupportChat(uid: uid, loggedInUser: loggedInUser,type: type,)));
         },
         child: Container(
           decoration: BoxDecoration(

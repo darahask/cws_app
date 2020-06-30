@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 class SupportLogin extends StatefulWidget {
+  final bool signedIn;
+  SupportLogin({this.signedIn});
   @override
   _SupportLoginState createState() => _SupportLoginState();
 }
@@ -16,12 +18,55 @@ class _SupportLoginState extends State<SupportLogin> {
   String email, password;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
+  bool loading2 = true;
+  void autoLogin() async {
+    var user = await _auth.currentUser();
+    var data = await firestore.collection('Client Support').getDocuments();
+    var data2 =
+        await firestore.collection('Sales Representative').getDocuments();
+    print(user.uid);
+    for (var doc in data.documents) {
+      print(doc.documentID);
+      if (doc.documentID == user.uid) {
+        print(doc.documentID);
+        setState(() {
+          loading = false;
+        });
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) => SupportSwitch(type: 'cs')));
+      }
+    }
+    for (var doc in data2.documents) {
+      if (doc.documentID == user.uid) {
+        setState(() {
+          loading = false;
+        });
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) => SupportSwitch(type: 'sr')));
+      }
+    }
+    setState(() {
+      loading = false;
+    });
+  }
+
+  @override
+  void initState() {
+    if (widget.signedIn == true) {
+      loading2 = true;
+      autoLogin();
+    } else {
+      loading2 = false;
+    }
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: ModalProgressHUD(
         inAsyncCall: loading,
-        child: Scaffold(
+        child: (loading2)?Center(child:CircularProgressIndicator()):Scaffold(
           key: _scaffoldKey,
           body: SingleChildScrollView(
             child: Column(
@@ -72,8 +117,34 @@ class _SupportLoginState extends State<SupportLogin> {
                     ),
                   ),
                 ),
+                SizedBox(
+                  height: 6,
+                ),
+                InkWell(
+                  onTap: () {
+                    if (email == null) {
+                      _scaffoldKey.currentState.showSnackBar(
+                        SnackBar(
+                          content: Text('Please enter email'),
+                        ),
+                      );
+                    } else if (email.isEmpty) {
+                      _scaffoldKey.currentState.showSnackBar(
+                        SnackBar(
+                          content: Text('Please enter email'),
+                        ),
+                      );
+                    } else
+                      _auth.sendPasswordResetEmail(email: email);
+                  },
+                  child: Text(
+                    'Forgot Password?',
+                    style: TextStyle(color: Colors.blue),
+                  ),
+                ),
                 Padding(
-                  padding: const EdgeInsets.all(35),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 35, vertical: 20),
                   child: GestureDetector(
                     onTap: () async {
                       try {
@@ -170,5 +241,5 @@ class _SupportLoginState extends State<SupportLogin> {
         ),
       ),
     );
-}
+  }
 }

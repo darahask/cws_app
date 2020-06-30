@@ -18,7 +18,7 @@ class _SupportSwitchState extends State<SupportSwitch> {
   List<BottomNavigationBarItem> items_b = [];
 
   loadData(String type) {
-    widgets = [SupportClient(), SupportDev(),AdminsChat('Client Support')];
+    widgets = [SupportClient(), SupportDev('Design Admin'),SupportDev('Development Admin'),AdminsChat('Client Support')];
     items_b = [
       BottomNavigationBarItem(
         icon: Icon(
@@ -27,6 +27,12 @@ class _SupportSwitchState extends State<SupportSwitch> {
         title: Text(
           'Clients',
         ),
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(
+          Icons.people,
+        ),
+        title: Text('Des Managers'),
       ),
       BottomNavigationBarItem(
         icon: Icon(

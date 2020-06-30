@@ -69,6 +69,7 @@ class _SalesRegisterState extends State<SalesRegister> {
                             'name': name,
                             'mobile': mobile,
                             'city' : city,
+                            'sd': DateTime.now().millisecondsSinceEpoch
                           });
                           setState(() {
                             loading = false;
